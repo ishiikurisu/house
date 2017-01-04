@@ -2,7 +2,8 @@ from house import controllers
 
 class House:
     controllers2actions = {
-        'load': controllers.LoadController
+        'load': controllers.LoadController,
+        'upload': controllers.UploadController
     }
 
     """Creates a house object with the appropriate controller depending
