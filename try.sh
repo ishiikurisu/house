@@ -3,3 +3,4 @@ cd sample_house
 python3 ../main.py load github.com/ishiikurisu/mcr
 python3 ../main.py upload github.com/ishiikurisu/mcr
 cd ..
+exit
