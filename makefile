@@ -1,0 +1,2 @@
+try:
+	sh try.sh
