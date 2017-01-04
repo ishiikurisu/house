@@ -3,4 +3,4 @@ class BasicController:
         self.args = args
 
     def draw(self):
-        print(args)
+        print(self.args)

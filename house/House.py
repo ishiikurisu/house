@@ -1,4 +1,4 @@
-import house.controllers
+from house import controllers
 
 class House:
     controllers2actions = {

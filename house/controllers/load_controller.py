@@ -1,4 +1,4 @@
-from basic_controller import *
+from house.controllers.basic_controller import *
 
 class LoadController(BasicController):
     """docstring for LoadController."""
