@@ -6,9 +6,15 @@ class LoadController(BasicController):
         super().__init__(args)
 
     def draw(self):
-        commands = [
-            'cd src',
-            'echo $PWD',
-            'cd ..'
-        ]
+        dirs = self.args[0].split('/')
+        levels = 1 + len(dirs)
+        commands = []
+
+        commands.append('cd src')
+        for direc in dirs:
+            commands.append('cd ' + direc)
+        commands.append('git pull origin master')
+        for _ in range(levels):
+            commands.append('cd ..')
+
         self.execute(commands)
