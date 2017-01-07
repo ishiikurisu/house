@@ -4,7 +4,9 @@ class House:
     controllers2actions = {
         'load': controllers.LoadController,
         'upload': controllers.UploadController,
-        'get': controllers.GetController
+        'get': controllers.GetController,
+        'build': controllers.BuildController,
+        'basic': controllers.BasicController
     }
 
     """Creates a house object with the appropriate controller depending
