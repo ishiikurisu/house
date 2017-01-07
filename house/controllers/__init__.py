@@ -1,3 +1,4 @@
 from house.controllers.basic_controller import BasicController
 from house.controllers.load_controller import LoadController
 from house.controllers.upload_controller import UploadController
+from house.controllers.get_controller import GetController

@@ -3,11 +3,12 @@ from house import controllers
 class House:
     controllers2actions = {
         'load': controllers.LoadController,
-        'upload': controllers.UploadController
+        'upload': controllers.UploadController,
+        'get': controllers.GetController
     }
 
     """Creates a house object with the appropriate controller depending
-    on the """
+    on the given parameters. """
     def __init__(self, argv):
         # Extracting action and assigning correct controller
         self.action = argv[0]
