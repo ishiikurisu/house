@@ -8,7 +8,7 @@ basic_controller.construct = function(args)
     self.shell = "sh"
     if self.script_name:sub(1, 1) == "\\" then
         self.shell = "cmd /C"
-        self.script_name = "." .. self.script_name
+        self.script_name = "." .. self.script_name .. "bat"
     end
 
     return self
@@ -28,9 +28,8 @@ basic_controller.new = function(args)
             io.write(cmd .. "\n")
         end
         io.close(fp)
-        print(self.shell .. " " .. self.script_name)
-        -- os.execute(self.shell .. " " .. self.script_name)
-        -- os.remove(self.script_name)
+        os.execute(self.shell .. " " .. self.script_name)
+        os.remove(self.script_name)
     end
 
     return self
