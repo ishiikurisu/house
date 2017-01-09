@@ -117,8 +117,8 @@ get_controller.new = function(args)
         local commands = { }
 
         table.insert(commands, "cd src")
-        for _, d in ipairs(dirs) do
-            table.insert(commands, "cd " .. d)
+        for i = 1, levels do
+            table.insert(commands, "cd " .. dirs[i])
         end
         table.insert(commands, "git clone https://" .. self.args[1] .. ".git")
         for i = 1, levels do
