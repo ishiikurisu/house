@@ -1,2 +1,2 @@
 #!/bin/sh
-lua ~/Documents/code/house/main.lua $@
+lua ~/Documents/code/house/bin/house.min.lua $@
