@@ -1,27 +1,29 @@
+local load_controller = require "house/controllers/load_controller"
 local house = { }
 
+house.tools = {
+    load = load_controller.new
+}
+
 house.construct = function(args)
-  local self = { }
+    local self = { }
+    local tool = args[1]
 
-  self.args = args
+    table.remove(args, 1)
+    self.tool = tool
+    self.controller = house.tools[tool](args)
 
-  return self
+    return self
 end
 
 house.new = function(args)
-  local self = house.construct(args)
+    local self = house.construct(args)
 
-  self.draw = function()
-    if self.args == nil then
-      print("nothing")
-    else
-      for i, it in ipairs(self.args) do
-        print(i .. ". " .. it)
-      end
+    self.draw = function()
+        self.controller.draw()
     end
-  end
 
-  return self
+    return self
 end
 
 return house
