@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 ~/Documents/code/house/main.py $@
+lua ~/Documents/code/house/bin/house.min.lua $@
