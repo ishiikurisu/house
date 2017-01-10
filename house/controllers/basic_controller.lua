@@ -4,6 +4,7 @@ basic_controller.construct = function(args)
     local self = { }
 
     self.args = args
+    self.repo = args[1]
     self.script_name = os.tmpname()
     self.shell = "sh"
     if self.script_name:sub(1, 1) == "\\" then
