@@ -10,7 +10,6 @@ build_controller.construct = function(args)
   local config = util.readAll(configpath)
   self.params = JSON.decode(config, 1, nil).build
 
-
   return self
 end
 
