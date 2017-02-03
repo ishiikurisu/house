@@ -5,6 +5,10 @@ upload:
 	lua main.lua upload github.com/ishiikurisu/mcr
 	lua main.lua upload github.com/ishiikurisu/doodle
 
+upload-no-args:
+	lua main.lua load
+	lua main.lua upload
+
 edit:
 	lua main.lua edit github.com/ishiikurisu/doodle
 
@@ -14,4 +18,5 @@ get:
 build:
 	lua main.lua build github.com/ishiikurisu/doodle
 
-try: edit
+try: load upload
+try-no-args: upload-no-args
