@@ -22,6 +22,23 @@ basic_controller.new = function(args)
         print(self.args)
     end
 
+    self.buildTree = function(repo, midaction)
+      local dirs = util.mysplit(repo, "/")
+      local levels = #dirs
+      local commands = { }
+
+      table.insert(commands, "cd src")
+      for _, d in ipairs(dirs) do
+        table.insert(commands, "cd " .. d)
+      end
+      commands = midaction(commands)
+      for i = 1, levels do
+        table.insert(commands, "cd ..")
+      end
+
+      return commands
+    end
+
     self.execute = function(commands)
         local fp = io.open(self.script_name, "w")
         io.output(fp)

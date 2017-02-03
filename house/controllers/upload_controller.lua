@@ -9,29 +9,12 @@ upload_controller.new = function(args)
     local repo = self.args[1]
 
     if repo ~= nil then
-      commands = self.buildTree(repo)
+      commands = self.buildTree(repo, self.addCommands)
     else
       commands = self.addCommands(commands)
     end
 
     self.execute(commands)
-  end
-
-  self.buildTree = function(repo)
-    local dirs = util.mysplit(repo, "/")
-    local levels = #dirs
-    local commands = { }
-
-    table.insert(commands, "cd src")
-    for _, d in ipairs(dirs) do
-      table.insert(commands, "cd " .. d)
-    end
-    commands = self.addCommands(commands)
-    for i = 1, levels do
-      table.insert(commands, "cd ..")
-    end
-
-    return commands
   end
 
   self.addCommands = function(commands)
