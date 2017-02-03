@@ -1,14 +1,18 @@
+local basic_controller = require "house/controllers/basic_controller"
 local load_controller = require "house/controllers/load_controller"
 local upload_controller = require "house/controllers/upload_controller"
 local get_controller = require "house/controllers/get_controller"
 local build_controller = require "house/controllers/build_controller"
+local edit_controller = require "house/controllers/edit_controller"
 local house = { }
 
 house.tools = {
     load = load_controller.new,
     upload = upload_controller.new,
     get = get_controller.new,
-    build = build_controller.new
+    build = build_controller.new,
+    edit = edit_controller.new,
+    basic = basic_controller.new
 }
 
 house.construct = function(args)
