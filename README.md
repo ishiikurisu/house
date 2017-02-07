@@ -36,14 +36,16 @@ To pull the current repository state from internet, call:
 ```
 house load <repo/name>
 ```
-This will call `git pull origin master` on its parameter folder.
+This will call `git pull origin master` on its parameter folder. If no folder 
+is provided, house will run these calls on the current folder.
 
 To upload data to internet, call:
 ```
 house upload <repo/name>
 ```
 This will call `git add -A`, `git commit`, and `git push origin master` on the
-given folder.
+given folder. If no folder is provided, house will run these calls on the 
+current folder.
 
 To clone a repo to your repository, call:
 ```
@@ -57,6 +59,12 @@ house build <repo/name>
 There is no default call for build therefore it must configured if you want to
 use this feature.
 
+To start your preferred text editor, call:
+```
+house edit <repo/name>
+```
+There is no default text editor to be called as it must configured beforehand.
+
 ## Configuration file ##
 
 Every repository in a house must contain a file named `.houseconfig`. Exactly
@@ -68,9 +76,13 @@ tool:
     "build": {
         "local": true,
         "command": "make try"
+    },
+    "edit": {
+        "editor": "atom"
     }
 }
 ```
 
 This snippet will configure your house to go the repository where this file is
-and run `make try` when you run `house build <repo/name>`.
+and run `make try` when you run `house build <repo/name>`; or to run 
+`atom <repo/name>` when you run `house edit <repo/name>`.
