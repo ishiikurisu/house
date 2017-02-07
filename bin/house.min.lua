@@ -927,7 +927,7 @@ edit_controller.construct = function(args)
   -- Loading configuration file
   local configpath = './src/' .. self.repo .. '/.houseconfig'
   local config = util.readAll(configpath)
-  self.params = JSON.decode(config, 1, nil).edit
+  self.params = json.decode(config, 1, nil).edit
 
   return self
 end
@@ -953,7 +953,9 @@ house.tools = {
     load = load_controller.new,
     upload = upload_controller.new,
     get = get_controller.new,
-    build = build_controller.new
+    build = build_controller.new,
+    edit = edit_controller.new,
+    basic = basic_controller.new
 }
 
 house.construct = function(args)
@@ -976,7 +978,6 @@ house.new = function(args)
 
     return self
 end
-
 -- MAIN PROCEDURE
 print("---")
 h = house.new(arg)
