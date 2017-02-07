@@ -734,6 +734,8 @@ if always_try_using_lpeg then
 end
 
 -- BASIC CONTROLLER DEFINITION
+local basic_controller = { }
+
 basic_controller.construct = function(args)
   local self = { }
 
@@ -943,8 +945,6 @@ edit_controller.new = function(args)
 
   return self
 end
-
-return edit_controller
 
 -- HOUSE DEFINITION
 local house = { }
