@@ -9,6 +9,7 @@ edit_controller.construct = function(args)
   local configpath = './src/' .. self.repo .. '/.houseconfig'
   local config = util.readAll(configpath)
   self.params = JSON.decode(config, 1, nil).edit
+  -- TODO Add possibility to choose editor through command line
 
   return self
 end
