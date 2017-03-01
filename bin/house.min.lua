@@ -1,47 +1,15 @@
--- UTILITIES
-local util = { }
-
-function util.mysplit(inputstr, sep)
-    if sep == nil then
-        sep = "%s"
-    end
-    local t = { }; i = 1
-    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
-        t[i] = str
-        i = i + 1
-    end
-    return t
-end
-
-function util.readAll(file)
-    local f = io.open(file, "rb")
-    local content = f:read("*all")
-    f:close()
-    return content
-end
-
-
 -- Module options:
 local always_try_using_lpeg = true
 local register_global_module_table = false
 local global_module_name = 'json'
-
 --[==[
-
 David Kolf's JSON module for Lua 5.1/5.2
-
 Version 2.5
-
-
 For the documentation see the corresponding readme.txt or visit
 <http://dkolf.de/src/dkjson-lua.fsl/>.
-
 You can contact the author by sending an e-mail to 'david' at the
 domain 'dkolf.de'.
-
-
 Copyright (C) 2010-2013 David Heiko Kolf
-
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -49,10 +17,8 @@ without limitation the rights to use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the Software, and to
 permit persons to whom the Software is furnished to do so, subject to
 the following conditions:
-
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -61,9 +27,7 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
 --]==]
-
 -- global dependencies:
 local pairs, type, tostring, tonumber, getmetatable, setmetatable, rawset =
       pairs, type, tostring, tonumber, getmetatable, setmetatable, rawset
@@ -74,26 +38,18 @@ local strrep, gsub, strsub, strbyte, strchar, strfind, strlen, strformat =
       string.find, string.len, string.format
 local strmatch = string.match
 local concat = table.concat
-
 local json = { version = "dkjson 2.5" }
-
 if register_global_module_table then
   _G[global_module_name] = json
 end
-
--- local _ENV = nil -- blocking globals in Lua 5.2
-
 pcall (function()
   -- Enable access to blocked metatables.
   -- Don't worry, this module doesn't change anything in them.
-  local debmeta = require "debug".getmetatable
   if debmeta then getmetatable = debmeta end
 end)
-
 json.null = setmetatable ({}, {
   __tojson = function () return "null" end
 })
-
 local function isarray (tbl)
   local max, n, arraylen = 0, 0, 0
   for k,v in pairs (tbl) do
@@ -117,12 +73,10 @@ local function isarray (tbl)
   end
   return true, max
 end
-
 local escapecodes = {
   ["\""] = "\\\"", ["\\"] = "\\\\", ["\b"] = "\\b", ["\f"] = "\\f",
   ["\n"] = "\\n",  ["\r"] = "\\r",  ["\t"] = "\\t"
 }
-
 local function escapeutf8 (uchar)
   local value = escapecodes[uchar]
   if value then
@@ -152,7 +106,6 @@ local function escapeutf8 (uchar)
     return ""
   end
 end
-
 local function fsub (str, pattern, repl)
   -- gsub always builds a new string in a buffer, even when no match
   -- exists. First using find should be more efficient when most strings
@@ -163,7 +116,6 @@ local function fsub (str, pattern, repl)
     return str
   end
 end
-
 local function quotestring (value)
   -- based on the regexp "escapable" in https://github.com/douglascrockford/JSON-js
   value = fsub (value, "[%z\1-\31\"\\\127]", escapeutf8)
@@ -180,7 +132,6 @@ local function quotestring (value)
   return "\"" .. value .. "\""
 end
 json.quotestring = quotestring
-
 local function replace(str, o, n)
   local i, j = strfind (str, o, 1, true)
   if i then
@@ -189,22 +140,17 @@ local function replace(str, o, n)
     return str
   end
 end
-
 -- locale independent num2str and str2num functions
 local decpoint, numfilter
-
 local function updatedecpoint ()
   decpoint = strmatch(tostring(0.5), "([^05+])")
   -- build a filter that can be used to remove group separators
   numfilter = "[^0-9%-%+eE" .. gsub(decpoint, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0") .. "]+"
 end
-
 updatedecpoint()
-
 local function num2str (num)
   return replace(fsub(tostring(num), numfilter, ""), decpoint, ".")
 end
-
 local function str2num (str)
   local num = tonumber(replace(str, ".", decpoint))
   if not num then
@@ -213,23 +159,19 @@ local function str2num (str)
   end
   return num
 end
-
 local function addnewline2 (level, buffer, buflen)
   buffer[buflen+1] = "\n"
   buffer[buflen+2] = strrep ("  ", level)
   buflen = buflen + 2
   return buflen
 end
-
 function json.addnewline (state)
   if state.indent then
     state.bufferlen = addnewline2 (state.level or 0,
                            state.buffer, state.bufferlen or #(state.buffer))
   end
 end
-
 local encode2 -- forward declaration
-
 local function addpair (key, value, prev, indent, level, buffer, buflen, tables, globalorder, state)
   local kt = type (key)
   if kt ~= 'string' and kt ~= 'number' then
@@ -246,7 +188,6 @@ local function addpair (key, value, prev, indent, level, buffer, buflen, tables,
   buffer[buflen+2] = ":"
   return encode2 (value, indent, level, buffer, buflen + 2, tables, globalorder, state)
 end
-
 local function appendcustom(res, buffer, state)
   local buflen = state.bufferlen
   if type (res) == 'string' then
@@ -255,7 +196,6 @@ local function appendcustom(res, buffer, state)
   end
   return buflen
 end
-
 local function exception(reason, value, state, buffer, buflen, defaultmessage)
   defaultmessage = defaultmessage or reason
   local handler = state.exception
@@ -268,11 +208,9 @@ local function exception(reason, value, state, buffer, buflen, defaultmessage)
     return appendcustom(ret, buffer, state)
   end
 end
-
 function json.encodeexception(reason, value, state, defaultmessage)
   return quotestring("<" .. defaultmessage .. ">")
 end
-
 encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, state)
   local valtype = type (value)
   local valmeta = getmetatable (value)
@@ -375,7 +313,6 @@ encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, s
   end
   return buflen
 end
-
 function json.encode (value, state)
   state = state or {}
   local oldbuffer = state.buffer
@@ -395,7 +332,6 @@ function json.encode (value, state)
     return concat (buffer)
   end
 end
-
 local function loc (str, where)
   local line, pos, linepos = 1, 1, 0
   while true do
@@ -410,11 +346,9 @@ local function loc (str, where)
   end
   return "line " .. line .. ", column " .. (where - linepos)
 end
-
 local function unterminated (str, what, where)
   return nil, strlen (str) + 1, "unterminated " .. what .. " at " .. loc (str, where)
 end
-
 local function scanwhite (str, pos)
   while true do
     pos = strfind (str, "%S", pos)
@@ -435,12 +369,10 @@ local function scanwhite (str, pos)
     end
   end
 end
-
 local escapechars = {
   ["\""] = "\"", ["\\"] = "\\", ["/"] = "/", ["b"] = "\b", ["f"] = "\f",
   ["n"] = "\n", ["r"] = "\r", ["t"] = "\t"
 }
-
 local function unichar (value)
   if value < 0 then
     return nil
@@ -462,7 +394,6 @@ local function unichar (value)
     return nil
   end
 end
-
 local function scanstring (str, pos)
   local lastpos = pos + 1
   local buffer, n = {}, 0
@@ -523,9 +454,7 @@ local function scanstring (str, pos)
     return "", lastpos
   end
 end
-
 local scanvalue -- forward declaration
-
 local function scantable (what, closechar, str, startpos, nullval, objectmeta, arraymeta)
   local len = strlen (str)
   local tbl, n = {}, 0
@@ -570,7 +499,6 @@ local function scantable (what, closechar, str, startpos, nullval, objectmeta, a
     end
   end
 end
-
 scanvalue = function (str, pos, nullval, objectmeta, arraymeta)
   pos = pos or 1
   pos = scanwhite (str, pos)
@@ -606,7 +534,6 @@ scanvalue = function (str, pos, nullval, objectmeta, arraymeta)
     return nil, pos, "no valid JSON value at " .. loc (str, pos)
   end
 end
-
 local function optionalmetatables(...)
   if select("#", ...) > 0 then
     return ...
@@ -614,22 +541,16 @@ local function optionalmetatables(...)
     return {__jsontype = 'object'}, {__jsontype = 'array'}
   end
 end
-
 function json.decode (str, pos, nullval, ...)
   local objectmeta, arraymeta = optionalmetatables(...)
   return scanvalue (str, pos, nullval, objectmeta, arraymeta)
 end
-
 function json.use_lpeg ()
-  local g = require ("lpeg")
-
   if g.version() == "0.11" then
     error "due to a bug in LPeg 0.11, it cannot be used for JSON matching"
   end
-
   local pegmatch = g.match
   local P, S, R = g.P, g.S, g.R
-
   local function ErrorCall (str, pos, msg, state)
     if not state.msg then
       state.msg = msg .. " at " .. loc (str, pos)
@@ -637,15 +558,12 @@ function json.use_lpeg ()
     end
     return false
   end
-
   local function Err (msg)
     return g.Cmt (g.Cc (msg) * g.Carg (2), ErrorCall)
   end
-
   local SingleLineComment = P"//" * (1 - S"\n\r")^0
   local MultiLineComment = P"/*" * (1 - P"*/")^0 * P"*/"
   local Space = (S" \n\r\t" + P"\239\187\191" + SingleLineComment + MultiLineComment)^0
-
   local PlainChar = 1 - S"\"\\\n\r"
   local EscapeSequence = (P"\\" * g.C (S"\"\\/bfnrt" + Err "unsupported escape sequence")) / escapechars
   local HexDigit = R("09", "af", "AF")
@@ -671,7 +589,6 @@ function json.use_lpeg ()
   local Constant = P"true" * g.Cc (true) + P"false" * g.Cc (false) + P"null" * g.Carg (1)
   local SimpleValue = Number + String + Constant
   local ArrayContent, ObjectContent
-
   -- The functions parsearray and parseobject parse only a single value/pair
   -- at a time and store them directly to avoid hitting the LPeg limits.
   local function parsearray (str, pos, nullval, state)
@@ -687,7 +604,6 @@ function json.use_lpeg ()
     until cont == 'last'
     return pos, setmetatable (t, state.arraymeta)
   end
-
   local function parseobject (str, pos, nullval, state)
     local obj, key, cont
     local npos
@@ -700,7 +616,6 @@ function json.use_lpeg ()
     until cont == 'last'
     return pos, setmetatable (t, state.objectmeta)
   end
-
   local Array = P"[" * g.Cmt (g.Carg(1) * g.Carg(2), parsearray) * Space * (P"]" + Err "']' expected")
   local Object = P"{" * g.Cmt (g.Carg(1) * g.Carg(2), parseobject) * Space * (P"}" + Err "'}' expected")
   local Value = Space * (Array + Object + SimpleValue)
@@ -709,7 +624,6 @@ function json.use_lpeg ()
   local Pair = g.Cg (Space * String * Space * (P":" + Err "colon expected") * ExpectedValue)
   ObjectContent = Pair * Space * (P"," * g.Cc'cont' + g.Cc'last') * g.Cp()
   local DecodeValue = ExpectedValue * g.Cp ()
-
   function json.decode (str, pos, nullval, ...)
     local state = {}
     state.objectmeta, state.arraymeta = optionalmetatables(...)
@@ -720,25 +634,16 @@ function json.use_lpeg ()
       return obj, retpos
     end
   end
-
   -- use this function only once:
   json.use_lpeg = function () return json end
-
   json.using_lpeg = true
-
-  return json -- so you can get the module using json = require "dkjson".use_lpeg()
 end
-
 if always_try_using_lpeg then
   pcall (json.use_lpeg)
 end
-
--- BASIC CONTROLLER DEFINITION
 local basic_controller = { }
-
 basic_controller.construct = function(args)
   local self = { }
-
   self.args = args
   self.repo = args[1]
   self.script_name = os.tmpname()
@@ -747,22 +652,17 @@ basic_controller.construct = function(args)
     self.shell = "cmd /C "
     self.script_name = "." .. self.script_name .. "bat"
   end
-
   return self
 end
-
 basic_controller.new = function(args)
   local self = basic_controller.construct(args)
-
   self.draw = function()
     print(self.args)
   end
-
   self.buildTree = function(repo, midaction)
     local dirs = util.mysplit(repo, "/")
     local levels = #dirs
     local commands = { }
-
     table.insert(commands, "cd src")
     for _, d in ipairs(dirs) do
       table.insert(commands, "cd " .. d)
@@ -771,10 +671,8 @@ basic_controller.new = function(args)
     for i = 1, levels do
       table.insert(commands, "cd ..")
     end
-
     return commands
   end
-
   self.execute = function(commands)
     local fp = io.open(self.script_name, "w")
     io.output(fp)
@@ -785,11 +683,100 @@ basic_controller.new = function(args)
     os.execute(self.shell .. self.script_name)
     os.remove(self.script_name)
   end
-
   return self
 end
-
--- LOAD CONTROLLER DEFINITION
+local edit_controller = { }
+edit_controller.construct = function(args)
+  local self = basic_controller.new(args)
+  -- Loading configuration file
+  local configpath = './src/' .. self.repo .. '/.houseconfig'
+  local config = util.readAll(configpath)
+  self.params = JSON.decode(config, 1, nil).edit
+  -- TODO Add possibility to choose editor through command line
+  return self
+end
+edit_controller.new = function(args)
+  local self = edit_controller.construct(args)
+  self.draw = function()
+    local where = ' src/' .. self.repo
+    local command = self.params.editor .. where .. ' &'
+    local commands = { }
+    table.insert(commands, command)
+    self.execute(commands)
+  end
+  return self
+end
+local build_controller = { }
+build_controller.construct = function(args)
+  local self = basic_controller.new(args)
+  -- Loading configuration file
+  local configpath = './src/' .. self.repo .. '/.houseconfig'
+  local config = util.readAll(configpath)
+  self.params = JSON.decode(config, 1, nil).build
+  return self
+end
+build_controller.new = function(args)
+  local self = build_controller.construct(args)
+  self.draw = function()
+    local commands = { }
+    local dirs = util.mysplit(self.repo, '/')
+    if self.params['local'] == true then
+      table.insert(commands, 'cd src')
+      for _, d in ipairs(dirs) do
+        table.insert(commands, 'cd ' .. d)
+      end
+      table.insert(commands, self.params.command)
+      for _ = 1, 1 + #dirs do
+        table.insert(commands, 'cd ..')
+      end
+    else
+      table.insert(commands, self.params.command)
+    end
+    self.execute(commands)
+  end
+  return self
+end
+local get_controller = { }
+get_controller.new = function(args)
+    local self = basic_controller.new(args)
+    self.draw = function()
+        local dirs = util.mysplit(self.args[1], "/")
+        local levels = #dirs
+        local commands = { }
+        table.insert(commands, "cd src")
+        for _, d in ipairs(dirs) do
+            table.insert(commands, "cd " .. d)
+        end
+        table.insert(commands, "git clone https://" .. self.args[1] .. ".git")
+        for i = 1, levels do
+            table.insert(commands, "cd ..")
+        end
+        self.execute(commands)
+    end
+    return self
+end
+local upload_controller = { }
+upload_controller.new = function(args)
+  local self = basic_controller.new(args)
+  self.draw = function()
+    local commands = { }
+    local repo = self.args[1]
+    if repo ~= nil then
+      commands = self.buildTree(repo, self.addCommands)
+    else
+      commands = self.addCommands(commands)
+      commands[#commands-2] = "git checkout " .. self.script_name
+    end
+    self.execute(commands)
+  end
+  self.addCommands = function(commands)
+    table.insert(commands, "git add -A")
+    table.insert(commands, "git commit")
+    table.insert(commands, "git push origin master")
+    return commands
+  end
+  return self
+end
 local load_controller = { }
 
 load_controller.construct = function(args)
@@ -820,136 +807,9 @@ load_controller.new = function(args)
     table.insert(commands, self.command)
     return commands
   end
-
   return self
 end
-
--- UPLOAD CONTROLLER DEFINITION
-local upload_controller = { }
-
-upload_controller.new = function(args)
-  local self = basic_controller.new(args)
-
-  self.draw = function()
-    local commands = { }
-    local repo = self.args[1]
-
-    if repo ~= nil then
-      commands = self.buildTree(repo, self.addCommands)
-    else
-      commands = self.addCommands(commands)
-      table.insert(commands, #commands-1, "git reset " .. self.script_name)
-    end
-
-    self.execute(commands)
-  end
-
-  self.addCommands = function(commands)
-    table.insert(commands, "git add -A")
-    table.insert(commands, "git commit")
-    table.insert(commands, "git push origin master")
-    return commands
-  end
-
-  return self
-end
-
--- GET CONTROLLER DEFINITION
-local get_controller = { }
-
-get_controller.new = function(args)
-    local self = basic_controller.new(args)
-
-    self.draw = function()
-        local dirs = util.mysplit(self.args[1], "/")
-        local levels = #dirs - 1
-        local commands = { }
-
-        table.insert(commands, "cd src")
-        for i = 1, levels do
-            table.insert(commands, "cd " .. dirs[i])
-        end
-        table.insert(commands, "git clone https://" .. self.args[1] .. ".git")
-        for i = 1, levels do
-            table.insert(commands, "cd ..")
-        end
-
-        self.execute(commands)
-    end
-
-    return self
-end
-
--- BUILD CONTROLLER DEFINITION
-local build_controller = { }
-
-build_controller.construct = function(args)
-  local self = basic_controller.new(args)
-
-  local configpath = './src/' .. self.repo .. '/.houseconfig'
-  local config = util.readAll(configpath)
-  self.params = json.decode(config, 1, nil).build
-
-  return self
-end
-
-build_controller.new = function(args)
-  local self = build_controller.construct(args)
-
-  self.draw = function()
-    local commands = { }
-    local dirs = util.mysplit(self.repo, '/')
-
-    if self.params['local'] == true then
-      table.insert(commands, 'cd src')
-      for _, d in ipairs(dirs) do
-        table.insert(commands, 'cd ' .. d)
-      end
-      table.insert(commands, self.params.command)
-      for _ = 1, 1 + #dirs do
-        table.insert(commands, 'cd ..')
-      end
-    else
-      table.insert(commands, self.params.command)
-    end
-
-    self.execute(commands)
-  end
-
-  return self
-end
-
--- EDIT CONTROLLER DEFINITION
-local edit_controller = { }
-
-edit_controller.construct = function(args)
-  local self = basic_controller.new(args)
-
-  -- Loading configuration file
-  local configpath = './src/' .. self.repo .. '/.houseconfig'
-  local config = util.readAll(configpath)
-  self.params = json.decode(config, 1, nil).edit
-
-  return self
-end
-
-edit_controller.new = function(args)
-  local self = edit_controller.construct(args)
-
-  self.draw = function()
-    local where = ' src/' .. self.repo
-    local command = self.params.editor .. where .. ' &'
-    local commands = { }
-    table.insert(commands, command)
-    self.execute(commands)
-  end
-
-  return self
-end
-
--- HOUSE DEFINITION
 local house = { }
-
 house.tools = {
     load = load_controller.new,
     upload = upload_controller.new,
@@ -958,28 +818,40 @@ house.tools = {
     edit = edit_controller.new,
     basic = basic_controller.new
 }
-
 house.construct = function(args)
     local self = { }
     local tool = args[1]
-
     table.remove(args, 1)
     self.tool = tool
     self.controller = house.tools[tool](args)
-
     return self
 end
-
 house.new = function(args)
     local self = house.construct(args)
-
     self.draw = function()
         self.controller.draw()
     end
-
     return self
 end
--- MAIN PROCEDURE
+local util = { }
+function util.mysplit(inputstr, sep)
+    if sep == nil then
+        sep = "%s"
+    end
+    local t = { }; i = 1
+    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+        t[i] = str
+        i = i + 1
+    end
+    return t
+end
+function util.readAll(file)
+    local f = io.open(file, "rb")
+    local content = f:read("*all")
+    f:close()
+    return content
+end
+
 print("---")
 h = house.new(arg)
 h.draw()
