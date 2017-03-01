@@ -766,7 +766,7 @@ upload_controller.new = function(args)
       commands = self.buildTree(repo, self.addCommands)
     else
       commands = self.addCommands(commands)
-      commands[#commands-2] = "git checkout " .. self.script_name
+      table.insert(commands, #commands-2, "git checkout " .. self.script_name)
     end
     self.execute(commands)
   end
