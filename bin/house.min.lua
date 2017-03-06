@@ -1,9 +1,27 @@
+local util = { }
+function util.mysplit(inputstr, sep)
+    if sep == nil then
+        sep = "%s"
+    end
+    local t = { }; i = 1
+    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+        t[i] = str
+        i = i + 1
+    end
+    return t
+end
+function util.readAll(file)
+    local f = io.open(file, "rb")
+    local content = f:read("*all")
+    f:close()
+    return content
+end
 -- Module options:
 local always_try_using_lpeg = true
 local register_global_module_table = false
 local global_module_name = 'json'
 --[==[
-David Kolf's JSON module for Lua 5.1/5.2
+David Kolf's json module for Lua 5.1/5.2
 Version 2.5
 For the documentation see the corresponding readme.txt or visit
 <http://dkolf.de/src/dkjson-lua.fsl/>.
@@ -42,7 +60,6 @@ local json = { version = "dkjson 2.5" }
 if register_global_module_table then
   _G[global_module_name] = json
 end
-local _ENV = nil -- blocking globals in Lua 5.2
 pcall (function()
   -- Enable access to blocked metatables.
   -- Don't worry, this module doesn't change anything in them.
@@ -118,7 +135,7 @@ local function fsub (str, pattern, repl)
   end
 end
 local function quotestring (value)
-  -- based on the regexp "escapable" in https://github.com/douglascrockford/JSON-js
+  -- based on the regexp "escapable" in https://github.com/douglascrockford/json-js
   value = fsub (value, "[%z\1-\31\"\\\127]", escapeutf8)
   if strfind (value, "[\194\216\220\225\226\239]") then
     value = fsub (value, "\194[\128-\159\173]", escapeutf8)
@@ -176,7 +193,7 @@ local encode2 -- forward declaration
 local function addpair (key, value, prev, indent, level, buffer, buflen, tables, globalorder, state)
   local kt = type (key)
   if kt ~= 'string' and kt ~= 'number' then
-    return nil, "type '" .. kt .. "' is not supported as a key by JSON."
+    return nil, "type '" .. kt .. "' is not supported as a key by json."
   end
   if prev then
     buflen = buflen + 1
@@ -233,7 +250,7 @@ encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, s
   elseif valtype == 'number' then
     local s
     if value ~= value or value >= huge or -value >= huge then
-      -- This is the behaviour of the original JSON implementation.
+      -- This is the behaviour of the original json implementation.
       s = "null"
     else
       s = num2str (value)
@@ -257,7 +274,7 @@ encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, s
       isa = false
     end
     local msg
-    if isa then -- JSON array
+    if isa then -- json array
       buflen = buflen + 1
       buffer[buflen] = "["
       for i = 1, n do
@@ -270,7 +287,7 @@ encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, s
       end
       buflen = buflen + 1
       buffer[buflen] = "]"
-    else -- JSON object
+    else -- json object
       local prev = false
       buflen = buflen + 1
       buffer[buflen] = "{"
@@ -310,7 +327,7 @@ encode2 = function (value, indent, level, buffer, buflen, tables, globalorder, s
     tables[value] = nil
   else
     return exception ('unsupported type', value, state, buffer, buflen,
-      "type '" .. valtype .. "' is not supported by JSON.")
+      "type '" .. valtype .. "' is not supported by json.")
   end
   return buflen
 end
@@ -504,7 +521,7 @@ scanvalue = function (str, pos, nullval, objectmeta, arraymeta)
   pos = pos or 1
   pos = scanwhite (str, pos)
   if not pos then
-    return nil, strlen (str) + 1, "no valid JSON value (reached the end)"
+    return nil, strlen (str) + 1, "no valid json value (reached the end)"
   end
   local char = strsub (str, pos, pos)
   if char == "{" then
@@ -532,7 +549,7 @@ scanvalue = function (str, pos, nullval, objectmeta, arraymeta)
         return nullval, pend + 1
       end
     end
-    return nil, pos, "no valid JSON value at " .. loc (str, pos)
+    return nil, pos, "no valid json value at " .. loc (str, pos)
   end
 end
 local function optionalmetatables(...)
@@ -548,7 +565,7 @@ function json.decode (str, pos, nullval, ...)
 end
 function json.use_lpeg ()
   if g.version() == "0.11" then
-    error "due to a bug in LPeg 0.11, it cannot be used for JSON matching"
+    error "due to a bug in LPeg 0.11, it cannot be used for json matching"
   end
   local pegmatch = g.match
   local P, S, R = g.P, g.S, g.R
@@ -692,7 +709,7 @@ edit_controller.construct = function(args)
   -- Loading configuration file
   local configpath = './src/' .. self.repo .. '/.houseconfig'
   local config = util.readAll(configpath)
-  self.params = JSON.decode(config, 1, nil).edit
+  self.params = json.decode(config, 1, nil).edit
   -- TODO Add possibility to choose editor through command line
   return self
 end
@@ -713,7 +730,7 @@ build_controller.construct = function(args)
   -- Loading configuration file
   local configpath = './src/' .. self.repo .. '/.houseconfig'
   local config = util.readAll(configpath)
-  self.params = JSON.decode(config, 1, nil).build
+  self.params = json.decode(config, 1, nil).build
   return self
 end
 build_controller.new = function(args)
@@ -825,24 +842,6 @@ house.new = function(args)
         self.controller.draw()
     end
     return self
-end
-local util = { }
-function util.mysplit(inputstr, sep)
-    if sep == nil then
-        sep = "%s"
-    end
-    local t = { }; i = 1
-    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
-        t[i] = str
-        i = i + 1
-    end
-    return t
-end
-function util.readAll(file)
-    local f = io.open(file, "rb")
-    local content = f:read("*all")
-    f:close()
-    return content
 end
 
 print("---")
