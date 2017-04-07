@@ -7,33 +7,33 @@ local edit_controller = require "house/controllers/edit_controller"
 local house = { }
 
 house.tools = {
-    load = load_controller.new,
-    upload = upload_controller.new,
-    get = get_controller.new,
-    build = build_controller.new,
-    edit = edit_controller.new,
-    basic = basic_controller.new
+  load = load_controller.new,
+  upload = upload_controller.new,
+  get = get_controller.new,
+  build = build_controller.new,
+  edit = edit_controller.new,
+  basic = basic_controller.new
 }
 
 house.construct = function(args)
-    local self = { }
-    local tool = args[1]
+  local self = { }
+  local tool = args[1]
 
-    table.remove(args, 1)
-    self.tool = tool
-    self.controller = house.tools[tool](args)
+  table.remove(args, 1)
+  self.tool = tool
+  self.controller = house.tools[tool](args)
 
-    return self
+  return self
 end
 
 house.new = function(args)
-    local self = house.construct(args)
+  local self = house.construct(args)
 
-    self.draw = function()
-        self.controller.draw()
-    end
+  self.draw = function()
+    self.controller.draw()
+  end
 
-    return self
+  return self
 end
 
 return house

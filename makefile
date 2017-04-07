@@ -1,3 +1,5 @@
+try: get load upload edit build
+
 load:
 	lua main.lua load github.com/ishiikurisu/mcr
 
@@ -12,11 +14,13 @@ upload-no-args:
 edit:
 	lua main.lua edit github.com/ishiikurisu/doodle
 
+edit-itself:
+	lua main.lua edit -e atom
+
 get:
 	lua main.lua get github.com/ishiikurisu/doodle
 
 build:
 	lua main.lua build github.com/ishiikurisu/doodle
 
-try: load upload
 try-no-args: upload-no-args

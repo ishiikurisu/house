@@ -1,10 +1,13 @@
+local flag_manager = require "house/flags/flag_manager"
 local basic_controller = { }
 
 basic_controller.construct = function(args)
   local self = { }
+  local options = flag_manager.parse(args)
 
+  self.options = options
   self.args = args
-  self.repo = args[1]
+  self.repo = options["repo"]
   self.script_name = os.tmpname()
   self.shell = "sh "
   if self.script_name:sub(1, 1) == "\\" then

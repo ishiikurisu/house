@@ -14,6 +14,7 @@ end
 
 function util.readAll(file)
     local f = io.open(file, "rb")
+    if f == nil then return nil end
     local content = f:read("*all")
     f:close()
     return content
