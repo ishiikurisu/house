@@ -6,7 +6,11 @@ build_controller.construct = function(args)
   local self = basic_controller.new(args)
 
   -- Loading configuration file
-  local configpath = './src/' .. self.repo .. '/.houseconfig'
+  local configpath = '.'
+  if self.repo ~= nil then
+    configpath = 'src/' .. self.repo
+  end
+  configpath = configpath .. '/.houseconfig'
   local config = util.readAll(configpath)
   self.params = JSON.decode(config, 1, nil).build
 
@@ -18,9 +22,9 @@ build_controller.new = function(args)
 
   self.draw = function()
     local commands = { }
-    local dirs = util.mysplit(self.repo, '/')
 
-    if self.params['local'] == true then
+    if (self.params['local'] == true) and (self.repo ~= nil) then
+      local dirs = util.mysplit(self.repo, '/')
       table.insert(commands, 'cd src')
       for _, d in ipairs(dirs) do
         table.insert(commands, 'cd ' .. d)

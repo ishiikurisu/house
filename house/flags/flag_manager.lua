@@ -25,10 +25,6 @@ function flag_manager.parse(args)
     end
   end
 
-  for k, v in pairs(options) do
-    print(k .. ': ' .. v)
-  end
-
   return options
 end
 

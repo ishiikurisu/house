@@ -5,8 +5,8 @@ basic_controller.construct = function(args)
   local self = { }
   local options = flag_manager.parse(args)
 
-  self.options = options
   self.args = args
+  self.options = options
   self.repo = options["repo"]
   self.script_name = os.tmpname()
   self.shell = "sh "
