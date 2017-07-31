@@ -1,2 +1,0 @@
-#!/bin/sh
-lua ~/Documents/code/house/bin/house.min.lua $@
