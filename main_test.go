@@ -13,12 +13,9 @@ func TestCanWriteScriptToFile(t *testing.T) {
     fp.WriteString(scriptContent)
     fp.Close()
 
-    output, oops := Execute(testScript)
+    oops := Execute(testScript)
     if oops != nil {
         t.Error("Couldn't execute script")
-    }
-    if output != "hi" {
-        t.Error("something went wrong in the script execution")
     }
 
     os.Remove(testScript)
