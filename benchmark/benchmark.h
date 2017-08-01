@@ -1,6 +1,8 @@
 #pragma once
 #include <stdio.h>
 #include <time.h>
+#define LINUX_OS 1
+#define WINDOWS_OS 2
 
 void write_results(clock_t what)
 {
@@ -9,6 +11,10 @@ void write_results(clock_t what)
 
 #ifdef _WIN32
 #include <process.h>
+
+int get_os() {
+  return 2;
+}
 
 int execute(char const **argv)
 {
@@ -50,6 +56,10 @@ int sysexec(char *cmd) {
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+int get_os() {
+  return 1;
+}
 
 int execute(char **argv)
 {
