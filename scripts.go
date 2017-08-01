@@ -6,15 +6,14 @@ import "C"
 import "errors"
 
 // Executes the script in the file identified by the source string
-func Execute(script string) error {
-    args := []*C.char {
-        C.CString("echo"),
-        C.CString("hi"),
+func Execute(script string) (int, error) {
+    args := C.CString("echo hi")
+    oops := errors.New("Not executing correctly")
+    output := int(C.sysexec(args))
+
+    if output == 0 {
+        oops = nil
     }
 
-    if output := C.execute(args); output == 0 {
-        return nil
-    } else {
-        return errors.New("Not executing correctly")
-    }
+    return output, oops
 }

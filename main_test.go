@@ -3,6 +3,7 @@ package house
 import (
     "testing"
     "os"
+    "fmt"
 )
 
 func TestCanWriteScriptToFile(t *testing.T) {
@@ -13,9 +14,9 @@ func TestCanWriteScriptToFile(t *testing.T) {
     fp.WriteString(scriptContent)
     fp.Close()
 
-    oops := Execute(testScript)
+    output, oops := Execute(testScript)
     if oops != nil {
-        t.Error("Couldn't execute script")
+        t.Error(fmt.Sprintf("Couldn't execute script with error %d", output))
     }
 
     os.Remove(testScript)
