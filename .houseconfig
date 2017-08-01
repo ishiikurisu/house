@@ -1,5 +1,6 @@
 {
   "build": {
-      "command": "go test github.com/ishiikurisu/house"
+      "command": "go test",
+      "local": true
   }
 }

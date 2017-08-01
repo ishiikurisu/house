@@ -23,5 +23,5 @@ func TestCanWriteScriptToFile(t *testing.T) {
 }
 
 func TestCanIdentifyControllersCorrectly(t *testing.T) {
-    fmt.Printf("TODO Implement controllers")
+    // fmt.Printf("TODO Implement controllers")
 }
