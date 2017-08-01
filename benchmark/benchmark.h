@@ -13,17 +13,17 @@ void write_results(clock_t what)
 #include <process.h>
 
 int get_os() {
-  return 2;
+  return WINDOWS_OS;
 }
 
-int execute(char const **argv)
+int sysexec(char const **argv)
 {
     char **arg = argv;
     return spawnv(P_WAIT, argv[1], ++arg);
 }
 
 
-int sysexec(char *cmd) {
+int execute(char *cmd) {
   int return_code = -1;
   char **parts = NULL;
   int no_spaces = 0;
@@ -47,7 +47,7 @@ int sysexec(char *cmd) {
     parts[k] = '\0';
   }
 
-  return_code = execute(parts);
+  return_code = sysexec(parts);
   return return_code;
 }
 
@@ -58,26 +58,10 @@ int sysexec(char *cmd) {
 #include <unistd.h>
 
 int get_os() {
-  return 1;
+  return LINUX_OS;
 }
 
-int execute(char **argv)
-{
-	char app[256];
-	char **arg = argv;
-
-	++arg;
-	sprintf(app, "%s", *arg);
-	for (++arg; *arg; ++arg)
-	{
-		sprintf(app, "%s %s", app, *arg);
-	}
-
-	printf("<%s>\n", app);
-  return system(app);
-}
-
-int sysexec(char *cmd) {
+int execute(char *cmd) {
   return system(cmd);
 }
 

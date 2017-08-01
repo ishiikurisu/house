@@ -21,3 +21,7 @@ func TestCanWriteScriptToFile(t *testing.T) {
 
     os.Remove(testScript)
 }
+
+func TestCanIdentifyControllersCorrectly(t *testing.T) {
+    fmt.Printf("TODO Implement controllers")
+}

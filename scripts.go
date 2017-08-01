@@ -1,7 +1,6 @@
 package house
 
 // #include "./benchmark/benchmark.h"
-//
 import "C"
 import "errors"
 import "fmt"
@@ -15,7 +14,7 @@ func Execute(script string) (int, error) {
 
     args := C.CString(fmt.Sprintf("%s %s", shell, script))
     oops := errors.New("Not executing correctly")
-    output := int(C.sysexec(args))
+    output := int(C.execute(args))
     if output == 0 {
         oops = nil
     }
