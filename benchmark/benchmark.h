@@ -70,7 +70,7 @@ char** str_split(char* a_str, const char a_delim)
 
 int sysexec(char const **argv)
 {
-    int return_code = (int) spawnv(P_WAIT, argv[0], argv+1);
+    int return_code = (int) spawnv(P_WAIT, argv[0], argv);
 
     if (return_code != 0) {
         return_code = errno;
