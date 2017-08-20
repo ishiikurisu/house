@@ -6,19 +6,19 @@ import "errors"
 import "os/exec"
 
 // Executes the script in the file identified by the source string
-func Execute(script string) (int, error) {
+func Execute(script string) (string, error) {
     cmd := exec.Command("sh", script)
-    output := 0
+    output := ""
 
     if GetOS() == "win32" {
         cmd = exec.Command("cmd", "/C", script)
     } else if GetOS() == "nope" {
-        return -1, errors.New("Unknown OS")
+        return output, errors.New("Unknown OS")
     }
 
-    _, oops := cmd.Output()
-    if oops != nil {
-        output = 2
+    outlet, oops := cmd.Output()
+    if oops == nil {
+        output = string(outlet)
     }
 
     return output, oops
