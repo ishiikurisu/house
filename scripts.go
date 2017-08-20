@@ -3,20 +3,22 @@ package house
 // #include "./benchmark/benchmark.h"
 import "C"
 import "errors"
+import "os/exec"
 
 // Executes the script in the file identified by the source string
 func Execute(script string) (int, error) {
-    args := "sh " + script
+    cmd := exec.Command("sh", script)
+    output := 0
+
     if GetOS() == "win32" {
-        args = "cmd /C " + script
+        cmd = exec.Command("cmd", "/C", script)
     } else if GetOS() == "nope" {
         return -1, errors.New("Unknown OS")
     }
 
-    oops := errors.New("Not executing correctly")
-    output := int(C.execute(C.CString(args)))
-    if output == 0 {
-        oops = nil
+    _, oops := cmd.Output()
+    if oops != nil {
+        output = 2
     }
 
     return output, oops
