@@ -27,6 +27,7 @@ func TestCanWriteScriptToFile(t *testing.T) {
 }
 
 func TestCanIdentifyControllersCorrectly(t *testing.T) {
+    // Load controller
     args := []string {
         "house",
         "load",
@@ -36,7 +37,12 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     if controller.GetKind() != LOAD {
         t.Error("Wrong controller kind")
     }
+    _, oops := controller.Execute()
+    if oops != nil {
+        t.Error(fmt.Sprintf("Couldn't load this repo. Cause: %s\n", oops.Error()))
+    }
 
+    // Basic controller
     args = []string {
         "house",
         "kill",

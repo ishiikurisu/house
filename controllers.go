@@ -4,11 +4,6 @@ import (
     "errors"
 )
 
-// Useless function to say hi.
-func SayHi() string {
-    return "hi"
-}
-
 // Defining controller kinds
 type ControllerKind int
 
@@ -23,21 +18,23 @@ const (
 
 // The basic controller to be
 type Controller interface {
-    Execute(string) (string, error)
+    Execute() (string, error)
     GetKind() ControllerKind
 }
 
 // Creates a new controller based on the provided os arguments
 func Generate(args []string) Controller {
-    controller := BasicController {
-        Kind: INVALID,
-    }
-
     if args[1] == "load" {
-        controller.Kind = LOAD
+        src := "."
+        if len(args) >= 3 {
+            src = args[2]
+        }
+        return NewLoadController(src)
+    } else {
+        return BasicController {
+            Kind: INVALID,
+        }
     }
-
-    return controller
 }
 
 // Description of the basic controller
@@ -45,8 +42,8 @@ type BasicController struct {
     Kind ControllerKind
 }
 
-func (controller BasicController) Execute(input string) (string, error) {
-    return input, errors.New("Basic controllers shouldn't execute")
+func (controller BasicController) Execute() (string, error) {
+    return "", errors.New("Basic controllers shouldn't execute")
 }
 
 func (controller BasicController) GetKind() ControllerKind {
