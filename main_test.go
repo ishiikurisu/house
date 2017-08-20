@@ -27,5 +27,22 @@ func TestCanWriteScriptToFile(t *testing.T) {
 }
 
 func TestCanIdentifyControllersCorrectly(t *testing.T) {
-    // fmt.Printf("TODO Implement controllers")
+    args := []string {
+        "house",
+        "load",
+        "github.com/ishiikurisu/logeybot",
+    }
+    controller := Generate(args)
+    if controller.GetKind() != LOAD {
+        t.Error("Wrong controller kind")
+    }
+
+    args = []string {
+        "house",
+        "kill",
+    }
+    controller = Generate(args)
+    if controller.GetKind() != INVALID {
+        t.Error("Are you mad, bro?")
+    }
 }
