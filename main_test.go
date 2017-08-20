@@ -7,13 +7,8 @@ import (
 )
 
 func TestCanWriteScriptToFile(t *testing.T) {
-    testScript := "test.sh"
+    testScript := GenerateScriptName("test")
     scriptContent := "echo hi\n"
-
-    if GetOS() == "win32" {
-        testScript = "test.bat"
-    }
-
     fp, _ := os.Create(testScript)
     fp.WriteString(scriptContent)
     fp.Close()

@@ -35,3 +35,14 @@ func GetOS() string {
         return "nope"
     }
 }
+
+// Generates a script name based on an arbitrary name
+func GenerateScriptName(script string) string {
+    output := script + ".sh"
+
+    if GetOS() == "win32" {
+        output = script + ".bat"
+    }
+
+    return output
+}
