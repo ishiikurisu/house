@@ -52,3 +52,15 @@ func GenerateScriptName(script string) string {
 func GoTo(inlet string) []string {
     return strings.Split(inlet, "/")
 }
+
+// Creates a list of `cd ..` to go back from a directory
+func GoFrom(inlet string) []string {
+    limit := len(GoTo(inlet))
+    outlet := make([]string, limit+1)
+
+    for i := 0; i <= limit; i++ {
+        outlet[i] = "cd .."
+    }
+
+    return outlet
+}

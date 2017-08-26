@@ -72,4 +72,10 @@ func TestCanGoFroAndToSomeDirs(t *testing.T) {
             t.Error(fmt.Sprintf("This answer is not correct: %s", correctAnswer))
         }
     }
+
+    dir = "github.com/ishiikurisu/house"
+    givenAnswers = GoFrom(dir)
+    if 4 != len(givenAnswers) {
+        t.Error(fmt.Sprintf("This answer is not correct: expected 4, got %d", len(givenAnswers)))
+    }
 }
