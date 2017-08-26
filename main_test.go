@@ -47,3 +47,29 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         t.Error("Are you mad, bro?")
     }
 }
+
+func TestCanGoFroAndToSomeDirs(t *testing.T) {
+    dir := "pokemon"
+    correctAnswers := []string {
+        "pokemon",
+    }
+    givenAnswers := GoTo(dir)
+    for i, correctAnswer := range correctAnswers {
+        if correctAnswer != givenAnswers[i] {
+            t.Error(fmt.Sprintf("This answer is not correct: %s", correctAnswer))
+        }
+    }
+
+    dir = "github.com/ishiikurisu/house"
+    correctAnswers = []string {
+        "github.com",
+        "ishiikurisu",
+        "house",
+    }
+    givenAnswers = GoTo(dir)
+    for i, correctAnswer := range correctAnswers {
+        if correctAnswer != givenAnswers[i] {
+            t.Error(fmt.Sprintf("This answer is not correct: %s", correctAnswer))
+        }
+    }
+}

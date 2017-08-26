@@ -4,6 +4,7 @@ package house
 import "C"
 import "errors"
 import "os/exec"
+import "strings"
 
 // Executes the script in the file identified by the source string
 func Execute(script string) (string, error) {
@@ -45,4 +46,9 @@ func GenerateScriptName(script string) string {
     }
 
     return output
+}
+
+// Separates a string into its directory parts
+func GoTo(inlet string) []string {
+    return strings.Split(inlet, "/")
 }

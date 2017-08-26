@@ -19,8 +19,30 @@ func NewLoadController(source string) LoadController {
 // Loads the git repository. Returns the standard output from the execution
 // of `git pull origin master` and an error if its there.
 func (controller LoadController) Execute() (string, error) {
-    // TODO Implement this method
-    return "", errors.New("Not implemented method")
+    output := ""
+    oops := errors.New("Not implemented method")
+    // commands := make([]string, 0)
+    //
+    // // Preparing script
+    // if controller.Source != "." {
+    //     moreCommands := GoTo(controller.Source)
+    //     for _, command = range moreCommands {
+    //         commands = append(commands, command)
+    //     }
+    // }
+    //
+    // commands = append(commands, "git pull origin master")
+    //
+    // if controller.Source != "." {
+    //     moreCommands := GoFrom(controller.Source)
+    //     for _, command = range moreCommands {
+    //         commands = append(commands, command)
+    //     }
+    // }
+    //
+    // // Executing script
+
+    return output, oops
 }
 
 // Defines how to get the load controller kind.
