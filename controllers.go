@@ -42,10 +42,13 @@ type BasicController struct {
     Kind ControllerKind
 }
 
+// This is a placeholder to indicate the basic controller is a controller.
+// This method should not be executed.
 func (controller BasicController) Execute() (string, error) {
     return "", errors.New("Basic controllers shouldn't execute")
 }
 
+// Will tell everyone this is a basic controller.
 func (controller BasicController) GetKind() ControllerKind {
     return controller.Kind
 }

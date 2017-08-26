@@ -16,13 +16,14 @@ func NewLoadController(source string) LoadController {
     }
 }
 
-// Describes the execution of the load controller
+// Loads the git repository. Returns the standard output from the execution
+// of `git pull origin master` and an error if its there.
 func (controller LoadController) Execute() (string, error) {
     // TODO Implement this method
     return "", errors.New("Not implemented method")
 }
 
-// Defines how to get the load controller kind
+// Defines how to get the load controller kind.
 func (controller LoadController) GetKind() ControllerKind {
     return controller.Kind
 }
