@@ -5,6 +5,8 @@ import "C"
 import "errors"
 import "os/exec"
 import "strings"
+import "os"
+import "fmt"
 
 // Executes the script in the file identified by the source string
 func Execute(script string) (string, error) {
@@ -46,6 +48,27 @@ func GenerateScriptName(script string) string {
     }
 
     return output
+}
+
+// Saves a script into a file. Returns an error if it can't even open the file.
+func CreateScript(where string, what []string) error {
+    fp, oops := os.Create(where)
+    if oops == nil {
+        defer fp.Close()
+    } else {
+        return oops
+    }
+
+    for _, line := range what {
+        fp.WriteString(fmt.Sprintf("%s\n", line))
+    }
+
+    return nil
+}
+
+// Deletes a script file.
+func DeleteScript(where string) {
+    os.Remove(where)
 }
 
 // Separates a string into its directory parts
