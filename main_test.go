@@ -53,7 +53,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
 func TestCanGoFroAndToSomeDirs(t *testing.T) {
     dir := "pokemon"
     correctAnswers := []string {
-        "pokemon",
+        "cd src",
+        "cd pokemon",
     }
     givenAnswers := GoTo(dir)
     for i, correctAnswer := range correctAnswers {
@@ -64,9 +65,10 @@ func TestCanGoFroAndToSomeDirs(t *testing.T) {
 
     dir = "github.com/ishiikurisu/house"
     correctAnswers = []string {
-        "github.com",
-        "ishiikurisu",
-        "house",
+        "cd src",
+        "cd github.com",
+        "cd ishiikurisu",
+        "cd house",
     }
     givenAnswers = GoTo(dir)
     for i, correctAnswer := range correctAnswers {

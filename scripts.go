@@ -73,15 +73,24 @@ func DeleteScript(where string) {
 
 // Separates a string into its directory parts
 func GoTo(inlet string) []string {
-    return strings.Split(inlet, "/")
+    parts := strings.Split(inlet, "/")
+    outlet := []string {
+        "cd src",
+    }
+
+    for _, part := range parts {
+        outlet = append(outlet, fmt.Sprintf("cd %s", part))
+    }
+
+    return outlet
 }
 
 // Creates a list of `cd ..` to go back from a directory
 func GoFrom(inlet string) []string {
     limit := len(GoTo(inlet))
-    outlet := make([]string, limit+1)
+    outlet := make([]string, limit)
 
-    for i := 0; i <= limit; i++ {
+    for i := 0; i < limit; i++ {
         outlet[i] = "cd .."
     }
 
