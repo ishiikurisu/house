@@ -1,5 +1,7 @@
 package house
 
+import "fmt"
+
 // Defines the load controller
 type UploadController struct {
     Kind ControllerKind
@@ -18,6 +20,7 @@ func NewUploadController(source string) UploadController {
 // of `git pull origin master` and an error if its there.
 func (controller UploadController) Execute() (string, error) {
     commands := make([]string, 0)
+    script := GenerateScriptName("upload")
 
     // Preparing script
     if controller.Source != "." {
@@ -28,6 +31,9 @@ func (controller UploadController) Execute() (string, error) {
     }
 
     commands = append(commands, "git add -A")
+    if controller.Source == "." {
+        commands = append(commands, fmt.Sprintf("git checkout %s", script))
+    }
     commands = append(commands, "git commit")
     commands = append(commands, "git push origin master")
 
@@ -39,7 +45,6 @@ func (controller UploadController) Execute() (string, error) {
     }
 
     // Executing script
-    script := GenerateScriptName("upload")
     CreateScript(script, commands)
     defer DeleteScript(script)
     return Execute(script)
