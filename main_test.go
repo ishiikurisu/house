@@ -61,6 +61,19 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     if controller.GetKind() != INVALID {
         t.Error("Are you mad, bro?")
     }
+
+    // Upload controller
+    args = []string {
+        "house",
+        "upload",
+    }
+    controller = Generate(args)
+    if controller.GetKind() != UPLOAD {
+        t.Error("Wrong controller kind")
+    }
+    if _, oops = controller.Execute(); oops == nil {
+        t.Error("Why are uploading from something that is not a repo?")
+    }
 }
 
 func TestCanGoFroAndToSomeDirs(t *testing.T) {

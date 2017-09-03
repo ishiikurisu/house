@@ -30,6 +30,12 @@ func Generate(args []string) Controller {
             src = args[2]
         }
         return NewLoadController(src)
+    } else if args[1] == "upload" {
+        src := "."
+        if len(args) >= 3 {
+            src = args[2]
+        }
+        return NewUploadController(src)
     } else {
         return BasicController {
             Kind: INVALID,
