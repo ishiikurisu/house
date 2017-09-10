@@ -2,13 +2,13 @@ package house
 
 import "fmt"
 
-// Defines the load controller
+// Defines the upload controller
 type UploadController struct {
     Kind ControllerKind
     Source string
 }
 
-// Creates a new load controller
+// Creates a new upload controller
 func NewUploadController(source string) UploadController {
     return UploadController {
         Kind: UPLOAD,
@@ -16,8 +16,8 @@ func NewUploadController(source string) UploadController {
     }
 }
 
-// Loads the git repository. Returns the standard output from the execution
-// of `git pull origin master` and an error if its there.
+// Uploads the git repository. Returns the standard output from the execution
+// of the upload sequence
 func (controller UploadController) Execute() (string, error) {
     commands := make([]string, 0)
     script := GenerateScriptName("upload")
@@ -51,7 +51,7 @@ func (controller UploadController) Execute() (string, error) {
 
 }
 
-// Defines how to get the load controller kind.
+// Defines how to get the upload controller kind.
 func (controller UploadController) GetKind() ControllerKind {
     return controller.Kind
 }
