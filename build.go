@@ -1,7 +1,5 @@
 package house
 
-import "fmt"
-
 // Defines the load controller
 type BuildController struct {
     Kind ControllerKind
@@ -10,7 +8,7 @@ type BuildController struct {
 
 // Creates a new load controller
 func NewBuildController(source string) BuildController {
-    return UploadController {
+    return BuildController {
         Kind: BUILD,
         Source: source,
     }
@@ -24,4 +22,5 @@ func (controller BuildController) GetKind() ControllerKind {
 // Tries to run the build command in the repo's config.
 // Returns the standard output from the execution of the command.
 func (controller BuildController) Execute() (string, error) {
+    return "", nil
 }
