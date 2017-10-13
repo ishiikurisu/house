@@ -136,7 +136,12 @@ func TestBuildControllerCanLoadConfigurationFile(t *testing.T) {
     jsonFile := "testhouse.json"
     CreateScript(jsonFile, []string{json})
     defer DeleteScript(jsonFile)
-    config := LoadArbitraryConfig(jsonFile)
+    config, oops := LoadArbitraryConfig(jsonFile)
+
+    if oops != nil {
+        t.Error("Couldn't load configuration file")
+        return
+    }
 
     // Checking for local build procedure
     if !config.IsLocal() {
@@ -145,4 +150,15 @@ func TestBuildControllerCanLoadConfigurationFile(t *testing.T) {
 
     // Checking expected commands
     // TODO Check expected commands
+    expected := []string {
+        "./configure",
+        "make",
+    }
+    extracted := config.GetCommands()
+    for i, _ := range expected {
+        if expected[i] != extracted[i] {
+            t.Error("Commands were not laoded correctly")
+            break
+        }
+    }
 }

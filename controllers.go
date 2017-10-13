@@ -36,6 +36,12 @@ func Generate(args []string) Controller {
             src = args[2]
         }
         return NewUploadController(src)
+    } else if args[1] == "build" {
+        src := "."
+        if len(args) >= 3 {
+            src = args[2]
+        }
+        return NewBuildController(src)
     } else {
         return BasicController {
             Kind: INVALID,
