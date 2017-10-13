@@ -84,8 +84,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     if controller.GetKind() != BUILD {
         t.Error("Wrong controller kind: should be BuildController")
     }
-    if _, oops = controller.Execute(); oops == nil {
-        t.Error("I don't know what to expect here")
+    if _, oops = controller.Execute(); oops != nil {
+        t.Error("Couldn't build itself")
     }
 }
 
@@ -149,12 +149,11 @@ func TestBuildControllerCanLoadConfigurationFile(t *testing.T) {
     }
 
     // Checking expected commands
-    // TODO Check expected commands
     expected := []string {
         "./configure",
         "make",
     }
-    extracted := config.GetCommands()
+    extracted := config.BuildCommands
     for i, _ := range expected {
         if expected[i] != extracted[i] {
             t.Error("Commands were not laoded correctly")

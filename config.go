@@ -3,6 +3,7 @@ package house
 import (
     "encoding/json"
     "io/ioutil"
+    "fmt"
 )
 
 type HouseConfig struct {
@@ -39,6 +40,12 @@ func LoadArbitraryConfig(source string) (HouseConfig, error) {
     } else {
         buildStuff := f.(map[string]interface{})["build"].(map[string]interface{})
         outlet.LocalBuild = buildStuff["local"].(bool)
+        rawCommands := buildStuff["commands"].([]interface{})
+        buildCommands := make([]string, len(rawCommands))
+        for i, rawCommand := range rawCommands {
+            buildCommands[i] = fmt.Sprintf("%v", rawCommand)
+        }
+        outlet.BuildCommands = buildCommands
     }
 
     return outlet, nil
