@@ -74,6 +74,19 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     if _, oops = controller.Execute(); oops == nil {
         t.Error("Why are uploading from something that is not a repo?")
     }
+
+    // Build controller
+    args = []string {
+        "house",
+        "build",
+    }
+    controller = Generate(args)
+    if controller.GetKind() != BUILD {
+        t.Error("Wrong controller kind: should be BuildController")
+    }
+    if _, oops = controller.Execute(); oops == nil {
+        t.Error("I don't know what to expect here")
+    }
 }
 
 func TestCanGoFroAndToSomeDirs(t *testing.T) {
@@ -108,4 +121,28 @@ func TestCanGoFroAndToSomeDirs(t *testing.T) {
     if 4 != len(givenAnswers) {
         t.Error(fmt.Sprintf("This answer is not correct: expected 4, got %d", len(givenAnswers)))
     }
+}
+
+func TestBuildControllerCanLoadConfigurationFile(t *testing.T) {
+    json := `{
+        "build": {
+            "local": true,
+            "commands": [
+                "./configure",
+                "make"
+            ]
+        }
+    }`
+    jsonFile := "testhouse.json"
+    CreateScript(jsonFile, []string{json})
+    defer DeleteScript(jsonFile)
+    config := LoadArbitraryConfig(jsonFile)
+
+    // Checking for local build procedure
+    if !config.IsLocal() {
+        t.Error("this is a local build procedure!")
+    }
+
+    // Checking expected commands
+    // TODO Check expected commands
 }

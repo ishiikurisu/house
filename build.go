@@ -1,5 +1,9 @@
 package house
 
+import (
+    "errors"
+)
+
 // Defines the load controller
 type BuildController struct {
     Kind ControllerKind
@@ -22,5 +26,5 @@ func (controller BuildController) GetKind() ControllerKind {
 // Tries to run the build command in the repo's config.
 // Returns the standard output from the execution of the command.
 func (controller BuildController) Execute() (string, error) {
-    return "", nil
+    return "", errors.New("Controller not implemented")
 }

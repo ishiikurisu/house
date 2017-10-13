@@ -1,8 +1,14 @@
 {
   "build": {
-      "command": "go test github.com/ishiikurisu/house"
+      "local": false,
+      "commands": [
+          "go install github.com/ishiikurisu/house"
+      ]
   },
   "test": {
-      "command": "go install github.com/ishiikurisu/house"
+      "local": false,
+      "commands": [
+          "go test github.com/ishiikurisu/house"
+      ]
   }
 }

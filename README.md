@@ -81,7 +81,9 @@ tool:
 {
     "build": {
         "local": true,
-        "command": "make try"
+        "commands": [
+            "make try"
+        ]
     },
     "edit": {
         "editor": "atom"
