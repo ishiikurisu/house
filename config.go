@@ -50,3 +50,13 @@ func LoadArbitraryConfig(source string) (HouseConfig, error) {
 
     return outlet, nil
 }
+
+func LoadConfig(source string) (HouseConfig, error) {
+    h := "house.json"
+    if source == "." {
+        return LoadArbitraryConfig(h)
+    } else {
+        return LoadArbitraryConfig(fmt.Sprintf("src/%s/%s", source, h))
+    }
+
+}

@@ -2,7 +2,7 @@
   "build": {
       "local": false,
       "commands": [
-          "go install github.com/ishiikurisu/house"
+          "go build github.com/ishiikurisu/house/main"
       ]
   },
   "test": {
