@@ -31,7 +31,7 @@ func (controller UploadController) Execute() (string, error) {
     }
 
     commands = append(commands, "git add -A")
-    commands = append(commands, fmt.Sprintf("git checkout %s", script))
+    commands = append(commands, fmt.Sprintf("git reset %s", script))
     commands = append(commands, "git commit")
     commands = append(commands, "git push origin master")
 
