@@ -85,7 +85,7 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         t.Error("Wrong controller kind: should be BuildController")
     }
     if _, oops = controller.Execute(); oops != nil {
-        t.Error("Couldn't build itself")
+        t.Error(fmt.Sprintf("Couldn't build itself: %v\n", oops))
     }
 }
 
