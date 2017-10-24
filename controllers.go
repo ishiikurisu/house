@@ -35,7 +35,15 @@ func Generate(args []string) Controller {
         if len(args) >= 3 {
             src = args[2]
         }
-        return NewUploadController(src)
+        uploadController := NewUploadController(src)
+        if len(args) >= 5 {
+            if args[3] == "-m" {
+              uploadController.SetMessage(args[4])
+            } else if args[2] == "-m" {
+              uploadController.SetMessage(args[3])
+            }
+        }
+        return uploadController
     } else if args[1] == "build" {
         src := "."
         if len(args) >= 3 {

@@ -6,6 +6,7 @@ import "fmt"
 type UploadController struct {
     Kind ControllerKind
     Source string
+    Message string
 }
 
 // Creates a new upload controller
@@ -13,7 +14,13 @@ func NewUploadController(source string) UploadController {
     return UploadController {
         Kind: UPLOAD,
         Source: source,
+        Message: "",
     }
+}
+
+// Sets a new message for the upload controller
+func (controller *UploadController) SetMessage(message string) {
+    controller.Message = message
 }
 
 // Uploads the git repository. Returns the standard output from the execution
@@ -30,9 +37,17 @@ func (controller UploadController) Execute() (string, error) {
         }
     }
 
+    commitMessage := "git commit"
+    if len(controller.Message) > 0 {
+        commitMessage = fmt.Sprintf("git commit -m \"%s\"", controller.Message)
+    }
+
     commands = append(commands, "git add -A")
     commands = append(commands, fmt.Sprintf("git reset %s", script))
+    commands = append(commands, commitMessage)
     commands = append(commands, "git commit")
+
+
     commands = append(commands, "git push origin master")
 
     if controller.Source != "." {
