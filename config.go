@@ -1,7 +1,7 @@
 package house
 
 import (
-    "encoding/json"
+    "gopkg.in/yaml.v2"
     "io/ioutil"
     "fmt"
 )
@@ -34,25 +34,26 @@ func LoadArbitraryConfig(source string) (HouseConfig, error) {
     }
 
     var f interface{}
-    oops = json.Unmarshal(raw, &f)
+    oops = yaml.Unmarshal(raw, &f)
     if oops != nil {
         return outlet, oops
-    } else {
-        buildStuff := f.(map[string]interface{})["build"].(map[string]interface{})
-        outlet.LocalBuild = buildStuff["local"].(bool)
-        rawCommands := buildStuff["commands"].([]interface{})
-        buildCommands := make([]string, len(rawCommands))
-        for i, rawCommand := range rawCommands {
-            buildCommands[i] = fmt.Sprintf("%v", rawCommand)
-        }
-        outlet.BuildCommands = buildCommands
     }
+
+    everything := f.(map[interface{}]interface{})
+    buildStuff := everything["build"].(map[interface{}]interface{})
+    outlet.LocalBuild = buildStuff["local"].(bool)
+    rawCommands := buildStuff["commands"].([]interface{})
+    buildCommands := make([]string, len(rawCommands))
+    for i, rawCommand := range rawCommands {
+        buildCommands[i] = fmt.Sprintf("%v", rawCommand)
+    }
+    outlet.BuildCommands = buildCommands
 
     return outlet, nil
 }
 
 func LoadConfig(source string) (HouseConfig, error) {
-    h := "house.json"
+    h := "house.yml"
     if source == "." {
         return LoadArbitraryConfig(h)
     } else {
