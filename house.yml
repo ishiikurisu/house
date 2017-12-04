@@ -3,7 +3,4 @@ build:
   local: false
   commands:
   - go build github.com/ishiikurisu/house/main
-test:
-  local: false
-  commands:
-  - go test github.com/ishiikurisu/house
+  - mv main house

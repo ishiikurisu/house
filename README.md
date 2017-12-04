@@ -73,22 +73,18 @@ There is no default text editor to be called as it must configured beforehand.
 
 ## Configuration file ##
 
-Every repository in a house can contain a file named `house.json`. Exactly
-`house.json`. In fact this is a JSON file containing specifications for each
+Every repository in a house can contain a file named `house.yml`. Exactly
+`house.yml`. In fact this is a JSON file containing specifications for each
 tool:
 
-``` json
-{
-    "build": {
-        "local": true,
-        "commands": [
-            "make try"
-        ]
-    },
-    "edit": {
-        "editor": "atom"
-    }
-}
+``` yaml
+---
+build:
+  local: true
+  commands:
+  - make try
+edit:
+  editor: atom
 ```
 
 This snippet will configure your house to go the repository where this file is
