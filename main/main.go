@@ -14,7 +14,7 @@ func main() {
     if oops == nil {
         fmt.Println(output)
     } else {
-        fmt.Printf("Oops: %s\n", oops)
+        fmt.Printf("Oops: %s\n%s\n", oops, output)
     }
     fmt.Println("...")
 }

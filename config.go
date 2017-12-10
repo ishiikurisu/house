@@ -41,7 +41,9 @@ func LoadArbitraryConfig(source string) (HouseConfig, error) {
 
     everything := f.(map[interface{}]interface{})
     buildStuff := everything["build"].(map[interface{}]interface{})
-    outlet.LocalBuild = buildStuff["local"].(bool)
+    if rawLocalBuild, ok := buildStuff["local"]; ok {
+        outlet.LocalBuild = rawLocalBuild.(bool)
+    } 
     rawCommands := buildStuff["commands"].([]interface{})
     buildCommands := make([]string, len(rawCommands))
     for i, rawCommand := range rawCommands {

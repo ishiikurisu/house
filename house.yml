@@ -1,6 +1,5 @@
 ---
 build:
-  local: false
   commands:
   - go build github.com/ishiikurisu/house/main
   - mv main house
