@@ -29,7 +29,7 @@ func (controller BuildController) Execute() (string, error) {
 
     var commands []string
     var command string
-    if config.IsLocal() {
+    if config.IsLocal() && (controller.Source != ".") {
         moreCommands := GoTo(controller.Source)
         for _, command = range moreCommands {
             commands = append(commands, command)
