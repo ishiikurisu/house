@@ -7,6 +7,7 @@ import "os/exec"
 import "strings"
 import "os"
 import "fmt"
+import "bytes"
 
 // Executes the script in the file identified by the source string
 func Execute(script string) (string, error) {
@@ -19,9 +20,13 @@ func Execute(script string) (string, error) {
         return output, errors.New("Unknown OS")
     }
 
+    buffer := bytes.NewBufferString("")
+    cmd.Stderr = buffer
     outlet, oops := cmd.Output()
     if oops == nil {
         output = string(outlet)
+    } else {
+        output = fmt.Sprintf("%v\n%s\n", oops, buffer.String())
     }
 
     return output, oops
