@@ -74,9 +74,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
 func TestCanGoFroAndToSomeDirs(t *testing.T) {
     cmd := NewCommander()
     cmd.GetPwd()
-    output, oops := cmd.Execute()
+    _, oops := cmd.Execute()
     if oops != nil {
         t.Error("Couldn't get PWD")
     }
-    fmt.Printf("PWD: %s\n", output)
 }
