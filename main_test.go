@@ -5,24 +5,6 @@ import (
     "fmt"
 )
 
-func TestCanWriteScriptToFile(t *testing.T) {
-    testScript := GenerateScriptName("test")
-    scriptContent := []string {
-        "echo hi",
-    }
-    oops := CreateScript(testScript, scriptContent)
-    if oops != nil {
-        t.Error("Couldn't save the script")
-        return
-    }
-    defer DeleteScript(testScript)
-
-    output, oops := Execute(testScript)
-    if oops != nil {
-        t.Error(fmt.Sprintf("Couldn't execute script with error %d", output))
-    }
-}
-
 func TestCanIdentifyControllersCorrectly(t *testing.T) {
     // Load controller
     args := []string {
@@ -90,74 +72,11 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
 }
 
 func TestCanGoFroAndToSomeDirs(t *testing.T) {
-    dir := "pokemon"
-    correctAnswers := []string {
-        "cd src",
-        "cd pokemon",
-    }
-    givenAnswers := GoTo(dir)
-    for i, correctAnswer := range correctAnswers {
-        if correctAnswer != givenAnswers[i] {
-            t.Error(fmt.Sprintf("This answer is not correct: %s", correctAnswer))
-        }
-    }
-
-    dir = "github.com/ishiikurisu/house"
-    correctAnswers = []string {
-        "cd src",
-        "cd github.com",
-        "cd ishiikurisu",
-        "cd house",
-    }
-    givenAnswers = GoTo(dir)
-    for i, correctAnswer := range correctAnswers {
-        if correctAnswer != givenAnswers[i] {
-            t.Error(fmt.Sprintf("This answer is not correct: %s", correctAnswer))
-        }
-    }
-
-    dir = "github.com/ishiikurisu/house"
-    givenAnswers = GoFrom(dir)
-    if 4 != len(givenAnswers) {
-        t.Error(fmt.Sprintf("This answer is not correct: expected 4, got %d", len(givenAnswers)))
-    }
-}
-
-func TestBuildControllerCanLoadConfigurationFile(t *testing.T) {
-    json := `{
-        "build": {
-            "local": true,
-            "commands": [
-                "./configure",
-                "make"
-            ]
-        }
-    }`
-    jsonFile := "testhouse.json"
-    CreateScript(jsonFile, []string{json})
-    defer DeleteScript(jsonFile)
-    config, oops := LoadArbitraryConfig(jsonFile)
-
+    cmd := NewCommander()
+    cmd.GetPwd()
+    output, oops := cmd.Execute()
     if oops != nil {
-        t.Error("Couldn't load configuration file")
-        return
+        t.Error("Couldn't get PWD")
     }
-
-    // Checking for local build procedure
-    if !config.IsLocal() {
-        t.Error("this is a local build procedure!")
-    }
-
-    // Checking expected commands
-    expected := []string {
-        "./configure",
-        "make",
-    }
-    extracted := config.BuildCommands
-    for i, _ := range expected {
-        if expected[i] != extracted[i] {
-            t.Error("Commands were not laoded correctly")
-            break
-        }
-    }
+    fmt.Printf("PWD: %s\n", output)
 }

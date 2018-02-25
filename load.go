@@ -1,5 +1,7 @@
 package house
 
+import "errors"
+
 // Defines the load controller
 type LoadController struct {
     Kind ControllerKind
@@ -17,31 +19,7 @@ func NewLoadController(source string) LoadController {
 // Loads the git repository. Returns the standard output from the execution
 // of `git pull origin master` and an error if its there.
 func (controller LoadController) Execute() (string, error) {
-    commands := make([]string, 0)
-
-    // Preparing script
-    if controller.Source != "." {
-        moreCommands := GoTo(controller.Source)
-        for _, command := range moreCommands {
-            commands = append(commands, command)
-        }
-    }
-
-    commands = append(commands, "git pull origin master")
-
-    if controller.Source != "." {
-        moreCommands := GoFrom(controller.Source)
-        for _, command := range moreCommands {
-            commands = append(commands, command)
-        }
-    }
-
-    // Executing script
-    script := GenerateScriptName("load")
-    CreateScript(script, commands)
-    defer DeleteScript(script)
-    return Execute(script)
-
+    return "", errors.New("Maintenance mode")
 }
 
 // Defines how to get the load controller kind.

@@ -1,6 +1,6 @@
 package house
 
-import "fmt"
+import "errors"
 
 // Defines the upload controller
 type UploadController struct {
@@ -26,39 +26,7 @@ func (controller *UploadController) SetMessage(message string) {
 // Uploads the git repository. Returns the standard output from the execution
 // of the upload sequence
 func (controller UploadController) Execute() (string, error) {
-    commands := make([]string, 0)
-    script := GenerateScriptName("upload")
-
-    // Preparing script
-    if controller.Source != "." {
-        moreCommands := GoTo(controller.Source)
-        for _, command := range moreCommands {
-            commands = append(commands, command)
-        }
-    }
-
-    commitMessage := "git commit"
-    if len(controller.Message) > 0 {
-        commitMessage = fmt.Sprintf("git commit -m \"%s\"", controller.Message)
-    }
-
-    commands = append(commands, "git add -A")
-    commands = append(commands, fmt.Sprintf("git reset %s", script))
-    commands = append(commands, commitMessage)
-    commands = append(commands, "git push origin master")
-
-    if controller.Source != "." {
-        moreCommands := GoFrom(controller.Source)
-        for _, command := range moreCommands {
-            commands = append(commands, command)
-        }
-    }
-
-    // Executing script
-    CreateScript(script, commands)
-    defer DeleteScript(script)
-    return Execute(script)
-
+    return "", errors.New("Maintenance mode")
 }
 
 // Defines how to get the upload controller kind.
