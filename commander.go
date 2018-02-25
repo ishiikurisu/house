@@ -30,7 +30,16 @@ func (cmdr *Commander) GetPwd() {
     }
 
     cmdr.Actions = append(cmdr.Actions, getPwd)
-}1
+}
+
+func (cmdr *Commander) Cd(where string) {
+    cd := func() (string, error) {
+        oops := os.Chdir(where)
+        return "", oops
+    }
+
+    cmdr.Actions = append(cmdr.Actions, cd)
+}
 
 func (cmdr *Commander) Execute() (string, error) {
     var oops error = nil

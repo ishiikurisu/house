@@ -91,6 +91,6 @@ func TestCanGoFroAndToSomeDirs(t *testing.T) {
     if oops == nil {
         t.Error("Changing to inexistent directory.")
     } else {
-        fmt.Println(output)
+        fmt.Println(oops)
     }
 }
