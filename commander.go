@@ -3,6 +3,7 @@ package house
 import (
     "fmt"
     "os/exec"
+    "os"
 )
 
 // The commander will execute the required actions for a house tool.
@@ -29,7 +30,7 @@ func (cmdr *Commander) GetPwd() {
     }
 
     cmdr.Actions = append(cmdr.Actions, getPwd)
-}
+}1
 
 func (cmdr *Commander) Execute() (string, error) {
     var oops error = nil

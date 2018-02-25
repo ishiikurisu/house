@@ -74,8 +74,23 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
 func TestCanGoFroAndToSomeDirs(t *testing.T) {
     cmd := NewCommander()
     cmd.GetPwd()
-    _, oops := cmd.Execute()
+    cmd.Cd("main")
+    cmd.GetPwd()
+
+    output, oops := cmd.Execute()
     if oops != nil {
-        t.Error("Couldn't get PWD")
+        t.Error("Couldn't get PWD.")
+    } else {
+        fmt.Println(output)
+    }
+
+    cmd.Cd("house")
+    cmd.GetPwd()
+
+    output, oops = cmd.Execute()
+    if oops == nil {
+        t.Error("Changing to inexistent directory.")
+    } else {
+        fmt.Println(output)
     }
 }
