@@ -23,37 +23,38 @@ func NewCommander() Commander {
     }
 }
 
-// IDEA Add `AppendAction` procedure to commander.
 
+// Adds a new action to the end of the commander actions.
+func (cmdr* Commander) Append(action func() (string, error)) {
+    cmdr.Actions = append(cmdr.Actions, action)
+}
+
+// Gets the current working directory on which the commander is running.
 func (cmdr *Commander) GetPwd() {
-    getPwd := func() (string, error) {
+    cmdr.Append(func() (string, error) {
         cmd := exec.Command("pwd")
         output, oops := cmd.Output()
         return string(output), oops
-    }
-
-    cmdr.Actions = append(cmdr.Actions, getPwd)
+    })
 }
 
+// Changes the current working directory.
 func (cmdr *Commander) Cd(where string) {
-    cd := func() (string, error) {
+    cmdr.Append(func() (string, error) {
         oops := os.Chdir(where)
         return "", oops
-    }
-
-    cmdr.Actions = append(cmdr.Actions, cd)
+    })
 }
 
+// Executes an arbitrary command.
 func (cmdr *Commander) RunCustomCommand(custom string) {
-    action := func() (string, error) {
+    cmdr.Append(func() (string, error) {
         pieces := strings.Split(custom, " ")
-        // IDEA Check [here](https://golang.org/pkg/os/exec/#Cmd)
         cmd := exec.Command(pieces[0])
         cmd.Args = pieces
         output, oops := cmd.Output()
         return string(output), oops
-    }
-    cmdr.Actions = append(cmdr.Actions, action)
+    })
 }
 
 func (cmdr *Commander) Execute() (string, error) {
