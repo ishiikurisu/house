@@ -1,7 +1,5 @@
 package house
 
-import "errors"
-
 // Defines the load controller
 type BuildController struct {
     Kind ControllerKind
@@ -24,5 +22,19 @@ func (controller BuildController) GetKind() ControllerKind {
 // Tries to run the build command in the repo's config.
 // Returns the standard output from the execution of the command.
 func (controller BuildController) Execute() (string, error) {
-    return "", errors.New("Maintenance mode")
+    commander := NewCommander()
+    config, oops := LoadConfig(controller.Source)
+
+    if oops != nil {
+        return "", oops
+    }
+    if config.IsLocal() && (controller.Source != ".") {
+        commander.Cd("src")
+        commander.Cd(controller.Source)
+    }
+    for _, command := range config.BuildCommands {
+        commander.RunCustomCommand(command)
+    }
+
+    return commander.Execute()
 }
