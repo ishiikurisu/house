@@ -34,7 +34,7 @@ func (controller UploadController) Execute() (string, error) {
     }
 
     commit := "git commit"
-    if len(controller.Message) == 0 {
+    if len(controller.Message) > 0 {
         commit = fmt.Sprintf("%s -m \"%s\"", commit, controller.Message)
     }
 
