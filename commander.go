@@ -4,6 +4,7 @@ import (
     "fmt"
     "os/exec"
     "os"
+    "strings"
 )
 
 // The commander will execute the required actions for a house tool.
@@ -22,6 +23,8 @@ func NewCommander() Commander {
     }
 }
 
+// IDEA Add `AppendAction` procedure to commander.
+
 func (cmdr *Commander) GetPwd() {
     getPwd := func() (string, error) {
         cmd := exec.Command("pwd")
@@ -39,6 +42,18 @@ func (cmdr *Commander) Cd(where string) {
     }
 
     cmdr.Actions = append(cmdr.Actions, cd)
+}
+
+func (cmdr *Commander) RunCustomCommand(custom string) {
+    action := func() (string, error) {
+        pieces := strings.Split(custom, " ")
+        // IDEA Check [here](https://golang.org/pkg/os/exec/#Cmd)
+        cmd := exec.Command(pieces[0])
+        cmd.Args = pieces
+        output, oops := cmd.Output()
+        return string(output), oops
+    }
+    cmdr.Actions = append(cmdr.Actions, action)
 }
 
 func (cmdr *Commander) Execute() (string, error) {
