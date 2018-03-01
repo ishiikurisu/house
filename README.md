@@ -74,7 +74,7 @@ There is no default text editor to be called as it must configured beforehand.
 ## Configuration file ##
 
 Every repository in a house can contain a file named `house.yml`. Exactly
-`house.yml`. In fact this is a JSON file containing specifications for each
+`house.yml`. In fact this is a YAML file containing specifications for each
 tool:
 
 ``` yaml
