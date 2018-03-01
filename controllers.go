@@ -68,9 +68,6 @@ func Generate(args []string) Controller {
         },
     }
     options, _ := parser.ParseArgs(usage, args[1:], "0.5.1")
-    for key := range options {
-        fmt.Printf("%s: %#v\n", key, options[key])
-    }
 
     // Clarifying source repository
     repo := "."

@@ -1,7 +1,5 @@
 package house
 
-import "fmt"
-
 // Defines the upload controller
 type UploadController struct {
     Kind ControllerKind
@@ -33,13 +31,8 @@ func (controller UploadController) Execute() (string, error) {
         commander.Cd(controller.Source)
     }
 
-    commit := "git commit"
-    if len(controller.Message) > 0 {
-        commit = fmt.Sprintf("%s -m \"%s\"", commit, controller.Message)
-    }
-
     commander.RunCustomCommand("git add -A")
-    commander.RunCustomCommand(commit)
+    commander.Commit(controller.Message)
     commander.RunCustomCommand("git push origin master")
 
     return commander.Execute()

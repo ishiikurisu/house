@@ -46,6 +46,17 @@ func (cmdr *Commander) Cd(where string) {
     })
 }
 
+func (cmdr *Commander) Commit(message string) {
+    cmdr.Append(func() (string, error) {
+        cmd := exec.Command("git", "commit")
+        if len(message) > 0 {
+            cmd = exec.Command("git", "commit", "-m", message)
+        }
+        output, oops := cmd.Output()
+        return string(output), oops
+    })
+}
+
 // Executes an arbitrary command.
 func (cmdr *Commander) RunCustomCommand(custom string) {
     cmdr.Append(func() (string, error) {
@@ -61,10 +72,11 @@ func (cmdr *Commander) Execute() (string, error) {
     var oops error = nil
     var outlet string = ""
 
-    for _, action := range cmdr.Actions {
+    for i, action := range cmdr.Actions {
         output, smallOops := action()
         outlet = fmt.Sprintf("%s%s", outlet, string(output))
         if smallOops != nil {
+            fmt.Printf("Shit happened on %d step\n", i+1)
             oops = smallOops
             break
         }
