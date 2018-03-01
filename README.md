@@ -53,23 +53,12 @@ This will call `git add -A`, `git commit`, and `git push origin master` on the
 given folder. If no folder is provided, house will run these calls on the
 current folder.
 
-To clone a repo to your repository, call:
-```
-house get <repo/name>
-```
-
 To build your project based on its configuration file, call:
 ```
 house build <repo/name>
 ```
 There is no default call for build therefore it must configured if you want to
 use this feature.
-
-To start your preferred text editor, call:
-```
-house edit <repo/name>
-```
-There is no default text editor to be called as it must configured beforehand.
 
 ## Configuration file ##
 
