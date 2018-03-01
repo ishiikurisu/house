@@ -17,8 +17,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         t.Error("Wrong controller kind")
     }
     _, oops := controller.Execute()
-    if oops != nil {
-        t.Error(fmt.Sprintf("Couldn't load this repo. Cause: %s\n", oops.Error()))
+    if oops == nil {
+        t.Error(fmt.Sprintf("Could load this repo. How? %s\n", oops.Error()))
     }
 
     args = []string {
@@ -27,11 +27,11 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     }
     controller = Generate(args)
     if controller.GetKind() != LOAD {
-        t.Error("Wrong controller kind")
+        t.Error("Wrong controller kind: shoud be load kind")
     }
-    _, oops = controller.Execute()
+    output, oops := controller.Execute()
     if oops != nil {
-        t.Error(fmt.Sprintf("Couldn't load this repo. Cause: %s\n", oops.Error()))
+        t.Error(fmt.Sprintf("Couldn't load this repo. Cause: %s\n%v\n", oops.Error(), output))
     }
 
     // Basic controller
@@ -51,10 +51,18 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     }
     controller = Generate(args)
     if controller.GetKind() != UPLOAD {
-        t.Error("Wrong controller kind")
+        t.Error("Wrong controller kind: should be upload")
     }
-    if _, oops = controller.Execute(); oops != nil {
-        t.Error("Why are uploading from something that is not a repo?")
+
+    args = []string {
+        "house",
+        "upload",
+        "-m",
+        "whatever",
+    }
+    controller = Generate(args)
+    if controller.GetKind() != UPLOAD {
+        t.Error("Wrong controller kind: should be upload")
     }
 
     // Build controller
@@ -66,9 +74,6 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     if controller.GetKind() != BUILD {
         t.Error("Wrong controller kind: should be BuildController")
     }
-    if _, oops = controller.Execute(); oops != nil {
-        t.Error(fmt.Sprintf("Couldn't build itself: %v\n", oops))
-    }
 }
 
 func TestCanGoFroAndToSomeDirs(t *testing.T) {
@@ -77,20 +82,16 @@ func TestCanGoFroAndToSomeDirs(t *testing.T) {
     cmd.Cd("main")
     cmd.GetPwd()
 
-    output, oops := cmd.Execute()
+    _, oops := cmd.Execute()
     if oops != nil {
         t.Error("Couldn't get PWD.")
-    } else {
-        fmt.Println(output)
     }
 
     cmd.Cd("house")
     cmd.GetPwd()
 
-    output, oops = cmd.Execute()
+    _, oops = cmd.Execute()
     if oops == nil {
         t.Error("Changing to inexistent directory.")
-    } else {
-        fmt.Println(oops)
     }
 }

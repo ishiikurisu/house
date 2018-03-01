@@ -25,7 +25,7 @@ func (controller LoadController) Execute() (string, error) {
     }
 
     commander.RunCustomCommand("git pull origin master")
-    
+
     return commander.Execute()
 }
 

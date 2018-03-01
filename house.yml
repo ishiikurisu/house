@@ -1,5 +1,5 @@
 ---
 build:
   commands:
+  - go test github.com/ishiikurisu/house
   - go build github.com/ishiikurisu/house/main
-  - mv main house
