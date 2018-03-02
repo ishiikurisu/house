@@ -52,6 +52,7 @@ func (cmdr *Commander) Commit(message string) {
         if len(message) > 0 {
             cmd = exec.Command("git", "commit", "-m", message)
         }
+        cmd.Stdin = os.Stdin
         output, oops := cmd.Output()
         return string(output), oops
     })
@@ -59,10 +60,12 @@ func (cmdr *Commander) Commit(message string) {
 
 // Executes an arbitrary command.
 func (cmdr *Commander) RunCustomCommand(custom string) {
+    // IDEA When splitting the string, consider stuff inside "" as one piece
     cmdr.Append(func() (string, error) {
         pieces := strings.Split(custom, " ")
         cmd := exec.Command(pieces[0])
         cmd.Args = pieces
+        cmd.Stdin = os.Stdin
         output, oops := cmd.Output()
         return string(output), oops
     })
@@ -76,7 +79,7 @@ func (cmdr *Commander) Execute() (string, error) {
         output, smallOops := action()
         outlet = fmt.Sprintf("%s%s", outlet, string(output))
         if smallOops != nil {
-            fmt.Printf("Shit happened on %d step\n", i+1)
+            fmt.Printf("Something happened on %d step\n", i+1)
             oops = smallOops
             break
         }
