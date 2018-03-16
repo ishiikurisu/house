@@ -3,12 +3,6 @@
 This tool aims to facilitate the integration of many Git repositories into one
 source folder.
 
-```
-WARNING
-```
-
-This program is being rewritten!
-
 ## Structure ##
 
 A house is a folder containing at least a `src` folder with one's working
@@ -72,10 +66,7 @@ build:
   local: true
   commands:
   - make try
-edit:
-  editor: atom
 ```
 
 This snippet will configure your house to go the repository where this file is
-and run `make try` when you run `house build <repo/name>`; or to run
-`atom <repo/name>` when you run `house edit <repo/name>`.
+and run `make try` when you run `house build <repo/name>`.
