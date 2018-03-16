@@ -5,6 +5,7 @@ import (
     "os/exec"
     "os"
     "strings"
+    "errors"
 )
 
 // The commander will execute the required actions for a house tool.
@@ -33,7 +34,7 @@ func (cmdr* Commander) Append(action func() (string, error)) {
 func (cmdr *Commander) GetPwd() {
     cmdr.Append(func() (string, error) {
         cmd := exec.Command("pwd")
-        output, oops := cmd.Output()
+        output, oops := cmd.CombinedOutput()
         return string(output), oops
     })
 }
@@ -53,7 +54,7 @@ func (cmdr *Commander) Commit(message string) {
             cmd = exec.Command("git", "commit", "-m", message)
         }
         cmd.Stdin = os.Stdin
-        output, oops := cmd.Output()
+        output, oops := cmd.CombinedOutput()
         return string(output), oops
     })
 }
@@ -66,7 +67,7 @@ func (cmdr *Commander) RunCustomCommand(custom string) {
         cmd := exec.Command(pieces[0])
         cmd.Args = pieces
         cmd.Stdin = os.Stdin
-        output, oops := cmd.Output()
+        output, oops := cmd.CombinedOutput()
         return string(output), oops
     })
 }
@@ -79,8 +80,7 @@ func (cmdr *Commander) Execute() (string, error) {
         output, smallOops := action()
         outlet = fmt.Sprintf("%s%s", outlet, string(output))
         if smallOops != nil {
-            fmt.Printf("Something happened on %d step\n", i+1)
-            oops = smallOops
+            oops = errors.New(fmt.Sprintf("Check step %d\n", i+1))
             break
         }
     }

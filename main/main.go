@@ -16,7 +16,7 @@ func main() {
         }
     } else {
         fmt.Println("---")
-        fmt.Printf("Oops: %s\n%s\n", oops, output)
-        fmt.Println("...")
+        fmt.Printf("%s\n", output)
+        fmt.Printf("... # %s\n", oops)
     }
 }
