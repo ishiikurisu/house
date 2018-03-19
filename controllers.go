@@ -43,7 +43,7 @@ func (controller BasicController) GetKind() ControllerKind {
 
 // Gets the documentation for the program.
 func GetDocumentation() string {
-    return `House 0.5.2
+    return `House 0.6.0
 
 Usage:
   house help
@@ -51,6 +51,7 @@ Usage:
   house upload [(-m <message>)]
   house upload <repo> [(-m <message>)]
   house build [<repo>]
+  house edit [<repo>]
 
 Options:
   -m    Adds a message to the upload procedure.
@@ -67,7 +68,7 @@ func Generate(args []string) Controller {
             fmt.Printf("%s\n", usage)
         },
     }
-    options, _ := parser.ParseArgs(usage, args[1:], "0.5.2")
+    options, _ := parser.ParseArgs(usage, args[1:], "0.6.0")
 
     // Clarifying source repository
     repo := "."
@@ -86,6 +87,8 @@ func Generate(args []string) Controller {
         return uploader
     } else if isIt, oops = options.Bool("build"); (oops == nil) && (isIt) {
         return NewBuildController(repo)
+    } else if isIt, oops = options.Bool("edit"); (oops == nil) && (isIt) {
+        return NewEditController(repo)
     }
 
     return BasicController {

@@ -3,3 +3,5 @@ build:
   commands:
   - go test github.com/ishiikurisu/house
   - go build github.com/ishiikurisu/house/main
+edit:
+  editor: atom
