@@ -33,7 +33,7 @@ type BasicController struct {
 // This is a placeholder to indicate the basic controller is a controller.
 // This method should not be executed.
 func (controller BasicController) Execute() (string, error) {
-    return "", errors.New("Basic controllers shouldn't execute")
+    return "", errors.New(GetDocumentation())
 }
 
 // Will tell everyone this is a basic controller.
@@ -43,7 +43,7 @@ func (controller BasicController) GetKind() ControllerKind {
 
 // Gets the documentation for the program.
 func GetDocumentation() string {
-    return `House 0.6.0
+    return `House 0.6.1
 
 Usage:
   house help
@@ -52,10 +52,6 @@ Usage:
   house upload <repo> [(-m <message>)]
   house build [<repo>]
   house edit [<repo>]
-
-Options:
-  -m    Adds a message to the upload procedure.
-
   `
 }
 
@@ -65,10 +61,9 @@ func Generate(args []string) Controller {
     usage := GetDocumentation()
     parser := &docopt.Parser {
         HelpHandler: func(err error, usage string) {
-            fmt.Printf("%s\n", usage)
         },
     }
-    options, _ := parser.ParseArgs(usage, args[1:], "0.6.0")
+    options, _ := parser.ParseArgs(usage, args[1:], "0.6.1")
 
     // Clarifying source repository
     repo := "."

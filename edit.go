@@ -1,5 +1,9 @@
 package house
 
+import (
+    "errors"
+)
+
 // Defines the edit controller
 type EditController struct {
     Kind ControllerKind
@@ -27,6 +31,8 @@ func (controller EditController) Execute() (string, error) {
 
     if oops != nil {
         return "", oops
+    } else if config.GetEditor() == "" {
+        return "", errors.New("Editor not set in configuration file")
     }
 
     if controller.Source != "." {
