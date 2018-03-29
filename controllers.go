@@ -1,7 +1,6 @@
 package house
 
 import (
-    "fmt"
     "errors"
     "github.com/docopt/docopt-go"
 )
