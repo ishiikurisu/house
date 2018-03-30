@@ -4,6 +4,7 @@ import (
     "gopkg.in/yaml.v2"
     "io/ioutil"
     "fmt"
+    "errors"
 )
 
 type HouseConfig struct {
@@ -43,21 +44,25 @@ func LoadArbitraryConfig(source string) (HouseConfig, error) {
     oops = yaml.Unmarshal(raw, &f)
     if oops != nil {
         return outlet, oops
+    } else if f == nil {
+        return outlet, errors.New("Empty configuration file.")
     }
 
     everything := f.(map[interface{}]interface{})
 
     // Getting build parameters
-    buildStuff := everything["build"].(map[interface{}]interface{})
-    if rawLocalBuild, ok := buildStuff["local"]; ok {
-        outlet.LocalBuild = rawLocalBuild.(bool)
+    if rawBuildStuff, ok := everything["build"]; ok {
+        buildStuff := rawBuildStuff.(map[interface{}]interface{})
+        if rawLocalBuild, ok := buildStuff["local"]; ok {
+            outlet.LocalBuild = rawLocalBuild.(bool)
+        }
+        rawCommands := buildStuff["commands"].([]interface{})
+        buildCommands := make([]string, len(rawCommands))
+        for i, rawCommand := range rawCommands {
+            buildCommands[i] = fmt.Sprintf("%v", rawCommand)
+        }
+        outlet.BuildCommands = buildCommands
     }
-    rawCommands := buildStuff["commands"].([]interface{})
-    buildCommands := make([]string, len(rawCommands))
-    for i, rawCommand := range rawCommands {
-        buildCommands[i] = fmt.Sprintf("%v", rawCommand)
-    }
-    outlet.BuildCommands = buildCommands
 
     // Getting edit parameters
     if rawEditStuff, ok := everything["edit"]; ok {
