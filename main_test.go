@@ -75,23 +75,3 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         t.Error("Wrong controller kind: should be BuildController")
     }
 }
-
-func TestCanGoFroAndToSomeDirs(t *testing.T) {
-    cmd := NewCommander()
-    cmd.GetPwd()
-    cmd.Cd("main")
-    cmd.GetPwd()
-
-    _, oops := cmd.Execute()
-    if oops != nil {
-        t.Error("Couldn't get PWD.")
-    }
-
-    cmd.Cd("house")
-    cmd.GetPwd()
-
-    _, oops = cmd.Execute()
-    if oops == nil {
-        t.Error("Changing to inexistent directory.")
-    }
-}

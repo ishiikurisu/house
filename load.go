@@ -1,5 +1,7 @@
 package house
 
+import "github.com/ishiikurisu/house/dishwasher"
+
 // Defines the load controller
 type LoadController struct {
     Kind ControllerKind
@@ -17,7 +19,7 @@ func NewLoadController(source string) LoadController {
 // Loads the git repository. Returns the standard output from the execution
 // of `git pull origin master` and an error if its there.
 func (controller LoadController) Execute() (string, error) {
-    commander := NewCommander()
+    commander := dishwasher.NewDishwasher()
 
     if controller.Source != "." {
         commander.Cd("src")

@@ -1,5 +1,7 @@
 package house
 
+import "github.com/ishiikurisu/house/dishwasher"
+
 // Defines the upload controller
 type UploadController struct {
     Kind ControllerKind
@@ -24,7 +26,7 @@ func (controller *UploadController) SetMessage(message string) {
 // Uploads the git repository. Returns the standard output from the execution
 // of the upload sequence
 func (controller UploadController) Execute() (string, error) {
-    commander := NewCommander()
+    commander := dishwasher.NewDishwasher()
 
     if controller.Source != "." {
         commander.Cd("src")

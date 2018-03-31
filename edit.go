@@ -2,6 +2,7 @@ package house
 
 import (
     "errors"
+    "github.com/ishiikurisu/house/dishwasher"
 )
 
 // Defines the edit controller
@@ -26,7 +27,7 @@ func (controller EditController) GetKind() ControllerKind {
 // Tries to run the build command in the repo's config.
 // Returns the standard output from the execution of the command.
 func (controller EditController) Execute() (string, error) {
-    commander := NewCommander()
+    commander := dishwasher.NewDishwasher()
     config, oops := LoadConfig(controller.Source)
 
     if oops != nil {
