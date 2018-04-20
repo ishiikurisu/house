@@ -8,15 +8,9 @@ import (
 
 func main() {
     controller := house.Generate(os.Args)
-    output, oops := controller.Execute()
 
-    if oops == nil {
-        if len(output) > 0 {
-            fmt.Println(output)
-        }
-    } else {
-        fmt.Println("---")
-        fmt.Printf("%s\n", output)
+    _, oops := controller.Execute()
+    if oops != nil {
         fmt.Printf("... # %s\n", oops)
     }
 }
