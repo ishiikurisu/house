@@ -42,7 +42,7 @@ func (controller BasicController) GetKind() ControllerKind {
 
 // Gets the documentation for the program.
 func GetDocumentation() string {
-    return `House 0.6.2
+    return `House 0.6.3
 
 Usage:
   house help
@@ -62,7 +62,7 @@ func Generate(args []string) Controller {
         HelpHandler: func(err error, usage string) {
         },
     }
-    options, _ := parser.ParseArgs(usage, args[1:], "0.6.2")
+    options, _ := parser.ParseArgs(usage, args[1:], "0.6.3")
 
     // Clarifying source repository
     repo := "."
