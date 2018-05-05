@@ -97,6 +97,7 @@ func (machine *Dishwasher) Execute() (string, error) {
         output, smallOops := action()
         outlet = fmt.Sprintf("%s%s", outlet, string(output))
         if smallOops != nil {
+		  	outlet = fmt.Sprintf("%s\n%s", outlet, smallOops)
             oops = errors.New(fmt.Sprintf("Check step %d", i+1))
             break
         }
