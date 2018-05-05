@@ -1,6 +1,11 @@
 package house
 
-import "github.com/ishiikurisu/house/dishwasher"
+import (
+  "github.com/ishiikurisu/house/dishwasher"
+  "errors"
+  "fmt"
+  "strconv"
+)
 
 // Defines the load controller
 type BuildController struct {
@@ -24,13 +29,16 @@ func (controller BuildController) GetKind() ControllerKind {
 // Tries to run the build command in the repo's config.
 // Returns the standard output from the execution of the command.
 func (controller BuildController) Execute() (string, error) {
-    commander := dishwasher.NewDishwasher()
+  	commander := dishwasher.NewDishwasher()
     config, oops := LoadConfig(controller.Source)
+  	offset := 0
 
     if oops != nil {
         return "", oops
     }
+
     if config.IsLocal() && (controller.Source != ".") {
+	  	offset = 2
         commander.Cd("src")
         commander.Cd(controller.Source)
     }
@@ -38,5 +46,12 @@ func (controller BuildController) Execute() (string, error) {
         commander.RunCustomCommand(command)
     }
 
-    return commander.Execute()
+  	outlet, oops := commander.Execute()
+	if oops != nil {
+	  	s := fmt.Sprintf("%s", oops)[len("check step "):]
+	  	wrongStep, _ := strconv.Atoi(s)
+		wrongStep -= offset
+	  	oops = errors.New(fmt.Sprintf("Check step %d", wrongStep))
+	}
+  	return outlet, oops
 }
