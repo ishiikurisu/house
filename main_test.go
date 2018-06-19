@@ -74,4 +74,15 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
     if controller.GetKind() != BUILD {
         t.Error("Wrong controller kind: should be BuildController")
     }
+
+  	// Get Controller
+  	args = []string {
+	  	"house",
+	  	"get",
+	  	"github.com/ishiikurisu/house",
+	}
+  	controller = Generate(args)
+  	if controller.GetKind() != GET {
+	    t.Error("Wrong controller kind: should be GetController")
+    }
 }
