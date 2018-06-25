@@ -2,6 +2,7 @@ package house
 
 import (
   "fmt"
+  "strings"
   "github.com/ishiikurisu/house/dishwasher"
 )
 
@@ -28,19 +29,10 @@ func (controller GetController) GetKind() ControllerKind {
 // execution of `git clone <source>` and an error if its there.
 func (controller GetController) Execute() (string, error) {
     machine := dishwasher.NewDishwasher()
-
-  	// Preparing folder structure
-	// TODO Extract required folders from `source` string
-  	// github.com/ishiikurisu/house => [github.com, ishiikurisu, house]
-
-
-	// Executing
-  	machine.Cd("src")
-  	// TODO cd and mkdir required dir to make this work
-  	// Do not forget to NOT change to the last dir, just make it
-    machine.RunCustomCommand(fmt.Sprintf("git clone %s", controller.Source))
-
+    folders := strings.Split(controller.Source, "/")
+    folder := fmt.Sprintf("src/%s", strings.Join(folders[0:len(folders)-1], "/"))
+    machine.MkDir(folder)
+    machine.Cd(folder)
+    machine.RunCustomCommand(fmt.Sprintf("git clone https://%s", controller.Source))
     return machine.Execute()
 }
-
-

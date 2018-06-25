@@ -62,6 +62,14 @@ func (machine *Dishwasher) Cd(where string) {
     })
 }
 
+// Creates a new directory
+func (machine *Dishwasher) MkDir(where string) {
+    machine.Append(func() (string, error) {
+        return fmt.Sprintf("mkdir %s", where), os.MkdirAll(where, os.ModeDir)
+    })
+}
+
+// Performs a git commit in the current working directory
 func (machine *Dishwasher) Commit(message string) {
     machine.Append(func() (string, error) {
         cmd := exec.Command("git", "commit")

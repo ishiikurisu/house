@@ -21,4 +21,15 @@ func TestCanGoFroAndToSomeDirs(t *testing.T) {
     if oops == nil {
         t.Error("Changing to inexistent directory.")
     }
+
+    cmd.Cd("dishwasher")
+    cmd.Execute()
+}
+
+func TestCanCheckForDirectoriesExistence(t *testing.T) {
+    cmd := NewDishwasher()
+    cmd.MkDir("test")
+    if _, oops := cmd.Execute(); oops != nil {
+        t.Error("Could not create test directory")
+    }
 }
