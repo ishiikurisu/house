@@ -33,3 +33,14 @@ func TestCanCheckForDirectoriesExistence(t *testing.T) {
         t.Error("Could not create test directory")
     }
 }
+
+func TestDishwasherCanReplaceCommands(t *testing.T) {
+  params := make(map[string]string)
+
+  // testing command without parameters
+  command := "echo 'no one cares'"
+  result, _ := ReplaceParameters(params, command)
+  if command != result {
+	t.Error("Dishwasher is seeing stuff where there isnt")
+  }
+}
