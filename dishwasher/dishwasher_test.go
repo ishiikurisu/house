@@ -57,7 +57,27 @@ func TestDishwasherCanReplaceCommands(t *testing.T) {
 	t.Error(msg)
   }
 
-  // TODO Test with multiple parameters
+  // Test with multiple parameters
+  params["what"] = "collect"
+  command = "python main.py @what @where"
+  desired = "python main.py collect /path/to/something"
+  result, _ = ReplaceParameters(params, command)
+  if result != desired {
+	msg := fmt.Sprintf("Dishwasher couldnt replace multiple variables\n%s\n",
+					   result)
+	t.Error(msg)
+  }
+
+  params["what"] = "collect"
+  command = "python main.py @what @where @what"
+  desired = "python main.py collect /path/to/something collect"
+  result, _ = ReplaceParameters(params, command)
+  if result != desired {
+	msg := fmt.Sprintf("Dishwasher couldnt replace multiple variables again\n%s\n",
+					   result)
+	t.Error(msg)
+  }
+
   // TODO Test with unknown variables
   // what if the command should contain a string with a @
   // that is not a house variable?
