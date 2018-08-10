@@ -86,3 +86,26 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
 	    t.Error("Wrong controller kind: should be GetController")
     }
 }
+
+func TestCanExecuteCommandsWithExecuteTool(t *testing.T) {
+    args := []string {
+        "house",
+        "execute",
+        "github.com/ishiikurisu/house",
+        "-v",
+        "@where",
+        "Aus Deutschland:",
+        "@what",
+        "guten morgen Joe",
+    }
+    controller := GenerateExecuteTool(args)
+    where, ok := controller.Arguments["where"]
+    if !ok {
+        t.Error("Wasn't able to parse all variables correctly")
+        return
+    }
+    if where != "Aus Deutschland:" {
+        t.Error("Parsed variable incorrectly")
+        return
+    }
+}

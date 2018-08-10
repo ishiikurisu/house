@@ -4,5 +4,9 @@ build:
   - go test github.com/ishiikurisu/house/dishwasher
   - go test github.com/ishiikurisu/house
   - go build github.com/ishiikurisu/house/main
+execute:
+  commands:
+  - echo @where
+  - echo @what
 edit:
   editor: atom

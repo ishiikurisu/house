@@ -5,6 +5,10 @@ import (
     "github.com/docopt/docopt-go"
 )
 
+/* #########################
+   # CONTROLLER DEFINITION #
+   ######################### */
+
 // Defining controller kinds
 type ControllerKind int
 
@@ -15,6 +19,7 @@ const (
     GET
     EDIT
     BUILD
+    EXECUTE
 )
 
 // The basic controller to be
@@ -40,9 +45,13 @@ func (controller BasicController) GetKind() ControllerKind {
     return controller.Kind
 }
 
+/* ##########
+   # DOCOPT #
+   ########## */
+
 // Gets the documentation for the program.
 func GetDocumentation() string {
-    return `House 0.7.0
+    return `House b0.8.0
 
 Usage:
   house help
@@ -52,43 +61,100 @@ Usage:
   house upload <repo> [(-m <message>)]
   house build [<repo>]
   house edit [<repo>]
+  house execute [<repo>] [(-a <arguments>...)]
   `
 }
 
 // Creates a new controller based on the provided os arguments
 func Generate(args []string) Controller {
+    // Listing all possible configurations
+    var config struct {
+        Help bool
+        Get bool
+        Load bool
+        Upload bool
+        Edit bool
+        Build bool
+        Execute bool
+        A bool
+        M bool
+        Repo string
+        Message string
+        Arguments []string
+    }
+
     // Parsing arguments
     usage := GetDocumentation()
     parser := &docopt.Parser {
         HelpHandler: func(err error, usage string) {
         },
     }
-    options, _ := parser.ParseArgs(usage, args[1:], "0.7.0")
+    options, _ := parser.ParseArgs(usage, args[1:], "b0.8.0")
+    options.Bind(&config)
 
     // Clarifying source repository
     repo := "."
-    if maybeRepo, oops := options.String("<repo>"); oops == nil {
-        repo = maybeRepo
+    if len(config.Repo) > 1 {
+        repo = config.Repo
     }
 
     // Building controller
-    if isIt, oops := options.Bool("load"); (oops == nil) && (isIt) {
+    if config.Load {
         return NewLoadController(repo)
-    } else if isIt, oops = options.Bool("upload"); (oops == nil) && (isIt) {
+    } else if config.Upload {
         uploader := NewUploadController(repo)
-        if message, oops := options.String("<message>"); oops == nil {
+        if message := config.Message; len(message) > 0 {
             uploader.SetMessage(message)
         }
         return uploader
-    } else if isIt, oops = options.Bool("build"); (oops == nil) && (isIt) {
+    } else if config.Build {
         return NewBuildController(repo)
-    } else if isIt, oops = options.Bool("edit"); (oops == nil) && (isIt) {
+    } else if config.Edit {
         return NewEditController(repo)
-	} else if isIt, oops = options.Bool("get"); (oops == nil) && (isIt) && (repo != ".") {
-	  	return NewGetController(repo)
-	}
+  	} else if config.Get {
+  	  	return NewGetController(repo)
+  	} else if config.Execute {
+        return GenerateExecuteTool(args)
+    }
 
     return BasicController {
         Kind: INVALID,
     }
+}
+
+// Creates an ExecuteController
+// TODO Discover why I am not working
+func GenerateExecuteTool(args []string) ExecuteController {
+    // Listing all possible configurations
+    var config struct {
+        Help bool
+        Get bool
+        Load bool
+        Upload bool
+        Edit bool
+        Execute bool
+        Repo string
+        Message string
+        Arguments []string
+    }
+
+    // Parsing arguments
+    usage := GetDocumentation()
+    parser := &docopt.Parser {
+        HelpHandler: func(err error, usage string) {
+        },
+    }
+    options, _ := parser.ParseArgs(usage, args[1:], "b0.8.0")
+    options.Bind(&config)
+
+    // Generating controller
+    repo := "."
+    if maybeRepo, oops := options.String("<repo>"); oops == nil {
+        repo = maybeRepo
+    }
+    controller := NewExecuteController(repo)
+    if len(config.Arguments) > 0 {
+        controller.ParseArguments(config.Arguments[0])
+    }
+    return controller
 }
