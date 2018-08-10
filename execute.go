@@ -3,7 +3,6 @@ package house
 import (
     // "github.com/ishiikurisu/house/dishwasher"
     "errors"
-    "fmt"
 )
 
 // Defines the execute controller
@@ -24,9 +23,15 @@ func NewExecuteController(source string) ExecuteController {
 
 // Parse a string to set new variables
 func (controller *ExecuteController) ParseArguments(inlet []string) {
-    // TODO Implement me when you found out how to get arguments in Docopt
-    fmt.Printf("! vars: '%s'\n", inlet)
-    controller.Arguments["where"] = "Aus Deutschland:"
+    key := ""
+    for _, it := range inlet {
+        if len(key) == 0 {
+            key = it[1:]
+        } else {
+            controller.Arguments[key] = it
+            key = ""
+        }
+    }
 }
 
 // Defines how to get the execute controller kind.

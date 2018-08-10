@@ -116,4 +116,14 @@ func TestCanExecuteCommandsWithExecuteTool(t *testing.T) {
         t.Error("Parsed variable incorrectly")
         return
     }
+
+    where, ok = controller.Arguments["what"]
+    if !ok {
+        t.Error("Wasn't able to parse all variables correctly")
+        return
+    }
+    if where != "guten morgen Joe" {
+        t.Error("Parsed variable incorrectly")
+        return
+    }
 }
