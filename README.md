@@ -61,6 +61,16 @@ house edit <repo/name>
 ```
 This will call the editor that is set on the configuration file.
 
+To execute a command from the project, run:
+```
+house execute <repo/name> [(-a <arguments>...)]
+```
+Each argument is a pair:
+
+- The first item is the name of the argument preceded by an "at" (@) symbol
+- The second item is the value of the argument. Strings must be between
+  quotation marks.
+
 ## Configuration file ##
 
 Every repository in a house can contain a file named `house.yml`. Exactly
@@ -72,7 +82,11 @@ tool:
 build:
   local: true
   commands:
-  - make try
+  - make
+execute:
+  local: true
+  commands:
+  - ./bin/main @op @where
 edit:
   edit: atom
 ```
@@ -80,3 +94,5 @@ edit:
 This snippet will configure your house to go the repository where this file is
 and run `make try` when you run `house build <repo/name>`.
 Or to start `atom .` when you run `house edit <repo/name>`.
+Or to execute a command from the repo when you run
+`house execute <repo/name> -a <arguments>...`.
