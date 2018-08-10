@@ -66,7 +66,7 @@ type ControllerConfiguration struct {
 
 // Gets the documentation for the program.
 func GetDocumentation() string {
-    return `House b0.8.0
+    return `House 0.8.0
 
 Usage:
   house help
@@ -82,16 +82,13 @@ Usage:
 
 // Creates a new controller based on the provided os arguments
 func ParseConfiguration(args []string) ControllerConfiguration {
-    // Listing all possible configurations
     var config ControllerConfiguration
-
-    // Parsing arguments
     usage := GetDocumentation()
     parser := &docopt.Parser {
         HelpHandler: func(err error, usage string) {
         },
     }
-    options, _ := parser.ParseArgs(usage, args[1:], "b0.8.0")
+    options, _ := parser.ParseArgs(usage, args[1:], "0.8.0")
     options.Bind(&config)
     return config
 }

@@ -28,7 +28,11 @@ func (controller *ExecuteController) ParseArguments(inlet []string) {
     key := ""
     for _, it := range inlet {
         if len(key) == 0 {
-            key = it[1:]
+            maybe := it
+            if maybe[0] == '@' {
+                maybe = maybe[1:]
+            }
+            key = maybe
         } else {
             controller.Arguments[key] = it
             key = ""
