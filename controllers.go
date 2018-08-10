@@ -49,6 +49,21 @@ func (controller BasicController) GetKind() ControllerKind {
    # DOCOPT #
    ########## */
 
+type ControllerConfiguration struct {
+    Help bool
+    Get bool
+    Load bool
+    Upload bool
+    Edit bool
+    Build bool
+    Execute bool
+    A bool
+    M bool
+    Repo string
+    Message string
+    Arguments []string
+}
+
 // Gets the documentation for the program.
 func GetDocumentation() string {
     return `House b0.8.0
@@ -66,22 +81,9 @@ Usage:
 }
 
 // Creates a new controller based on the provided os arguments
-func Generate(args []string) Controller {
+func ParseConfiguration(args []string) ControllerConfiguration {
     // Listing all possible configurations
-    var config struct {
-        Help bool
-        Get bool
-        Load bool
-        Upload bool
-        Edit bool
-        Build bool
-        Execute bool
-        A bool
-        M bool
-        Repo string
-        Message string
-        Arguments []string
-    }
+    var config ControllerConfiguration
 
     // Parsing arguments
     usage := GetDocumentation()
@@ -91,11 +93,14 @@ func Generate(args []string) Controller {
     }
     options, _ := parser.ParseArgs(usage, args[1:], "b0.8.0")
     options.Bind(&config)
+    return config
+}
 
+func GenerateController(config ControllerConfiguration) Controller {
     // Clarifying source repository
     repo := "."
     if len(config.Repo) > 1 {
-        repo = config.Repo
+      repo = config.Repo
     }
 
     // Building controller
@@ -114,7 +119,7 @@ func Generate(args []string) Controller {
   	} else if config.Get {
   	  	return NewGetController(repo)
   	} else if config.Execute {
-        return GenerateExecuteTool(args)
+        return GenerateExecuteTool(config)
     }
 
     return BasicController {
@@ -123,41 +128,20 @@ func Generate(args []string) Controller {
 }
 
 // Creates an ExecuteController
-// TODO Discover why I am not working
-func GenerateExecuteTool(args []string) ExecuteController {
-    // Listing all possible configurations
-    var config struct {
-        Help bool
-        Get bool
-        Load bool
-        Upload bool
-        Edit bool
-        Build bool
-        Execute bool
-        A bool
-        M bool
-        Repo string
-        Message string
-        Arguments []string
-    }
-
-    // Parsing arguments
-    usage := GetDocumentation()
-    parser := &docopt.Parser {
-        HelpHandler: func(err error, usage string) {
-        },
-    }
-    options, _ := parser.ParseArgs(usage, args[1:], "b0.8.0")
-    options.Bind(&config)
-
-    // Generating controller
+func GenerateExecuteTool(config ControllerConfiguration) ExecuteController {
     repo := "."
     if len(config.Repo) > 1 {
         repo = config.Repo
     }
     controller := NewExecuteController(repo)
     if len(config.Arguments) > 0 {
-        controller.ParseArguments(config.Arguments[0])
+        controller.ParseArguments(config.Arguments)
     }
     return controller
+}
+
+// The main House function: parses configurations and generates a controller
+func Generate(args []string) Controller {
+    config := ParseConfiguration(args)
+    return GenerateController(config)
 }

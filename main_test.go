@@ -12,7 +12,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         "load",
         "github.com/ishiikurisu/logeybot",
     }
-    controller := Generate(args)
+    config := ParseConfiguration(args)
+    controller := GenerateController(config)
     if controller.GetKind() != LOAD {
         t.Error("Wrong controller kind")
     }
@@ -25,7 +26,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         "house",
         "load",
     }
-    controller = Generate(args)
+    config = ParseConfiguration(args)
+    controller = GenerateController(config)
     if controller.GetKind() != LOAD {
         t.Error("Wrong controller kind: shoud be load kind")
     }
@@ -39,7 +41,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         "house",
         "kill",
     }
-    controller = Generate(args)
+    config = ParseConfiguration(args)
+    controller = GenerateController(config)
     if controller.GetKind() != INVALID {
         t.Error("Are you mad, bro?")
     }
@@ -49,7 +52,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         "house",
         "upload",
     }
-    controller = Generate(args)
+    config = ParseConfiguration(args)
+    controller = GenerateController(config)
     if controller.GetKind() != UPLOAD {
         t.Error("Wrong controller kind: should be upload")
     }
@@ -60,7 +64,8 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         "-m",
         "whatever",
     }
-    controller = Generate(args)
+    config = ParseConfiguration(args)
+    controller = GenerateController(config)
     if controller.GetKind() != UPLOAD {
         t.Error("Wrong controller kind: should be upload")
     }
@@ -70,20 +75,22 @@ func TestCanIdentifyControllersCorrectly(t *testing.T) {
         "house",
         "build",
     }
-    controller = Generate(args)
+    config = ParseConfiguration(args)
+    controller = GenerateController(config)
     if controller.GetKind() != BUILD {
         t.Error("Wrong controller kind: should be BuildController")
     }
 
   	// Get Controller
   	args = []string {
-	  	"house",
-	  	"get",
-	  	"github.com/ishiikurisu/house",
-	}
-  	controller = Generate(args)
+        "house",
+        "get",
+        "github.com/ishiikurisu/house",
+	   }
+    config = ParseConfiguration(args)
+    controller = GenerateController(config)
   	if controller.GetKind() != GET {
-	    t.Error("Wrong controller kind: should be GetController")
+        t.Error("Wrong controller kind: should be GetController")
     }
 }
 
@@ -98,7 +105,8 @@ func TestCanExecuteCommandsWithExecuteTool(t *testing.T) {
         "@what",
         "guten morgen Joe",
     }
-    controller := GenerateExecuteTool(args)
+    config := ParseConfiguration(args)
+    controller := GenerateExecuteTool(config)
     where, ok := controller.Arguments["where"]
     if !ok {
         t.Error("Wasn't able to parse all variables correctly")

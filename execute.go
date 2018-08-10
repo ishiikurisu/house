@@ -23,7 +23,7 @@ func NewExecuteController(source string) ExecuteController {
 }
 
 // Parse a string to set new variables
-func (controller *ExecuteController) ParseArguments(inlet string) {
+func (controller *ExecuteController) ParseArguments(inlet []string) {
     // TODO Implement me when you found out how to get arguments in Docopt
     fmt.Printf("! vars: '%s'\n", inlet)
     controller.Arguments["where"] = "Aus Deutschland:"
