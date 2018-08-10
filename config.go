@@ -10,6 +10,8 @@ import (
 type HouseConfig struct {
     LocalBuild bool
     BuildCommands []string
+    LocalExecution bool
+    ExecutionCommands []string
     Editor string
 }
 
@@ -17,6 +19,8 @@ func NewHouseConfig() HouseConfig {
     return HouseConfig {
         LocalBuild: false,
         BuildCommands: []string {},
+        LocalExecution: false,
+        ExecutionCommands: []string {},
         Editor: "",
     }
 }
@@ -69,6 +73,20 @@ func LoadArbitraryConfig(source string) (HouseConfig, error) {
         editStuff := rawEditStuff.(map[interface{}]interface{})
         editor := editStuff["editor"].(string)
         outlet.Editor = editor
+    }
+
+    // Getting execute parameters
+    if rawExecutionStuff, ok := everything["execute"]; ok {
+        executeStuff := rawExecutionStuff.(map[interface{}]interface{})
+        if rawLocalExecution, ok := executeStuff["local"]; ok {
+            outlet.LocalExecution = rawLocalExecution.(bool)
+        }
+        rawCommands := executeStuff["commands"].([]interface{})
+        executionCommands := make([]string, len(rawCommands))
+        for i, rawCommand := range rawCommands {
+            executionCommands[i] = fmt.Sprintf("%v", rawCommand)
+        }
+        outlet.ExecutionCommands = executionCommands
     }
 
     return outlet, nil

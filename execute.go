@@ -1,8 +1,10 @@
 package house
 
 import (
-    // "github.com/ishiikurisu/house/dishwasher"
+    "github.com/ishiikurisu/house/dishwasher"
     "errors"
+    "fmt"
+    "strconv"
 )
 
 // Defines the execute controller
@@ -39,11 +41,38 @@ func (controller ExecuteController) GetKind() ControllerKind {
     return controller.Kind
 }
 
-// Tries to run the build command in the repo's config.
+// Tries to run the execute command in the repo's config.
 // Returns the standard output from the execution of the command.
 func (controller ExecuteController) Execute() (string, error) {
-    // TODO Implement me when you found out how to get arguments in Docopt
-  	// commander := dishwasher.NewDishwasher()
+  	commander := dishwasher.NewDishwasher()
+    config, oops := LoadConfig(controller.Source)
     outlet := ""
-    return outlet, errors.New("Not implemented yet")
+    offset := 0
+
+    if oops != nil {
+        return outlet, oops
+    }
+
+    if config.LocalExecution && (controller.Source != ".") {
+        offset = 2
+        commander.Cd("src")
+        commander.Cd(controller.Source)
+    }
+    for _, rawCommand := range config.ExecutionCommands {
+        command, oops := dishwasher.ReplaceParameters(controller.Arguments, rawCommand)
+        if oops != nil {
+            return outlet, oops
+        }
+        commander.RunCustomCommand(command)
+    }
+
+    outlet, oops = commander.Execute()
+    if oops != nil {
+        s := fmt.Sprintf("%s", oops)[len("check step "):]
+        wrongStep, _ := strconv.Atoi(s)
+        wrongStep -= offset
+        oops = errors.New(fmt.Sprintf("Check step %d", wrongStep))
+    }
+
+    return outlet, oops
 }
