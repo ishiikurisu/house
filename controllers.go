@@ -132,7 +132,10 @@ func GenerateExecuteTool(args []string) ExecuteController {
         Load bool
         Upload bool
         Edit bool
+        Build bool
         Execute bool
+        A bool
+        M bool
         Repo string
         Message string
         Arguments []string
@@ -149,8 +152,8 @@ func GenerateExecuteTool(args []string) ExecuteController {
 
     // Generating controller
     repo := "."
-    if maybeRepo, oops := options.String("<repo>"); oops == nil {
-        repo = maybeRepo
+    if len(config.Repo) > 1 {
+        repo = config.Repo
     }
     controller := NewExecuteController(repo)
     if len(config.Arguments) > 0 {

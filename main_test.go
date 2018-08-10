@@ -92,7 +92,7 @@ func TestCanExecuteCommandsWithExecuteTool(t *testing.T) {
         "house",
         "execute",
         "github.com/ishiikurisu/house",
-        "-v",
+        "-a",
         "@where",
         "Aus Deutschland:",
         "@what",
