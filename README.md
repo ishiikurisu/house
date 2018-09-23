@@ -87,6 +87,7 @@ execute:
   local: true
   commands:
   - ./bin/main @op @where
+  - ./par/cmd @op $
 edit:
   edit: atom
 ```
@@ -96,3 +97,6 @@ and run `make try` when you run `house build <repo/name>`.
 Or to start `atom .` when you run `house edit <repo/name>`.
 Or to execute a command from the repo when you run
 `house execute <repo/name> -a <arguments>...`.
+
+Build and execute commands can be executed in parallel: just put a dollar sign
+`$` at the end of the line to make it run on background.
