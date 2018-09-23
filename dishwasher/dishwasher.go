@@ -17,6 +17,9 @@ type Dishwasher struct {
     // This is a command that is ran after every custom command, so more complex
     // actions can be taken into consideration.
     SideEffect func(string, error)
+
+    // This can be used to output the program to a log instantly.
+    Logger chan string
 }
 
 // Creates an empty Dishwasher
@@ -25,10 +28,9 @@ func NewDishwasher() Dishwasher {
     return Dishwasher {
         Actions: make([]func() (string, error), 0),
         SideEffect: func(s string, e error) {
-            if len(s) > 0 {
-                fmt.Printf("%s", s)
-            }
+
         },
+        Logger: make(chan string),
     }
 }
 
@@ -83,6 +85,15 @@ func (machine *Dishwasher) Commit(message string) {
     })
 }
 
+// Starts a procedure to log the output to the logger
+func (machine *Dishwasher) StartLogging() {
+    go func() {
+        for it := range machine.Logger {
+            fmt.Print(it)
+        }
+    }()
+}
+
 // Executes an arbitrary command.
 func (machine *Dishwasher) RunCustomCommand(custom string) {
     // IDEA When splitting the string, consider stuff inside "" as one piece
@@ -101,6 +112,17 @@ func (machine *Dishwasher) Execute() (string, error) {
     var oops error = nil
     var outlet string = ""
 
+    // setup
+    machine.StartLogging()
+    machine.SideEffect = func(s string, e error) {
+        if len(s) > 0 {
+            machine.Logger <- s
+        } else {
+            machine.Logger <- fmt.Sprintf("%s", e)
+        }
+    }
+
+    // loop
     for i, action := range machine.Actions {
         output, smallOops := action()
         outlet = fmt.Sprintf("%s%s", outlet, string(output))
