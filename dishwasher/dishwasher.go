@@ -17,9 +17,6 @@ type Dishwasher struct {
     // This is a command that is ran after every custom command, so more complex
     // actions can be taken into consideration.
     SideEffect func(string, error)
-
-    // This can be used to output the program to a log instantly.
-    Logger chan string
 }
 
 // Creates an empty Dishwasher
@@ -28,9 +25,13 @@ func NewDishwasher() Dishwasher {
     return Dishwasher {
         Actions: make([]func() (string, error), 0),
         SideEffect: func(s string, e error) {
-
+            if len(s) > 0 {
+                fmt.Print(s)
+            }
+            if e != nil {
+                fmt.Printf("%s\n", e)
+            }
         },
-        Logger: make(chan string),
     }
 }
 
@@ -85,26 +86,33 @@ func (machine *Dishwasher) Commit(message string) {
     })
 }
 
-// Starts a procedure to log the output to the logger
-func (machine *Dishwasher) StartLogging() {
-    go func() {
-        for it := range machine.Logger {
-            fmt.Print(it)
-        }
-    }()
+// This function executes a command and returns its standard output and
+// error messages
+func RunCommand(custom string) (string, error) {
+    pieces := strings.Split(custom, " ")
+    cmd := exec.Command(pieces[0])
+    cmd.Args = pieces
+    cmd.Stdin = os.Stdin
+    output, oops := cmd.CombinedOutput()
+    return string(output), oops
 }
 
 // Executes an arbitrary command.
 func (machine *Dishwasher) RunCustomCommand(custom string) {
-    // IDEA When splitting the string, consider stuff inside "" as one piece
     machine.Append(func() (string, error) {
-        pieces := strings.Split(custom, " ")
-        cmd := exec.Command(pieces[0])
-        cmd.Args = pieces
-        cmd.Stdin = os.Stdin
-        output, oops := cmd.CombinedOutput()
-        machine.SideEffect(string(output), oops)
-        return string(output), oops
+        var output string = ""
+        var oops error = nil
+
+        custom = strings.TrimSpace(custom)
+        if custom[len(custom)-1] == '$' {
+            go RunCommand(custom)
+        } else {
+            custom = strings.TrimSpace(strings.TrimSuffix(custom, "$"))
+            output, oops = RunCommand(custom)
+            machine.SideEffect(output, oops)
+        }
+
+        return output, oops
     })
 }
 
@@ -112,17 +120,6 @@ func (machine *Dishwasher) Execute() (string, error) {
     var oops error = nil
     var outlet string = ""
 
-    // setup
-    machine.StartLogging()
-    machine.SideEffect = func(s string, e error) {
-        if len(s) > 0 {
-            machine.Logger <- s
-        } else {
-            machine.Logger <- fmt.Sprintf("%s", e)
-        }
-    }
-
-    // loop
     for i, action := range machine.Actions {
         output, smallOops := action()
         outlet = fmt.Sprintf("%s%s", outlet, string(output))
