@@ -89,6 +89,7 @@ func (machine *Dishwasher) Commit(message string) {
 // This function executes a command and returns its standard output and
 // error messages
 func RunCommand(custom string) (string, error) {
+    custom = strings.TrimSpace(strings.TrimSuffix(custom, "$"))
     pieces := strings.Split(custom, " ")
     cmd := exec.Command(pieces[0])
     cmd.Args = pieces
@@ -107,7 +108,6 @@ func (machine *Dishwasher) RunCustomCommand(custom string) {
         if custom[len(custom)-1] == '$' {
             go RunCommand(custom)
         } else {
-            custom = strings.TrimSpace(strings.TrimSuffix(custom, "$"))
             output, oops = RunCommand(custom)
             machine.SideEffect(output, oops)
         }
