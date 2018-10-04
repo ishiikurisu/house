@@ -66,16 +66,16 @@ type ControllerConfiguration struct {
 
 // Gets the documentation for the program.
 func GetDocumentation() string {
-    return `House 0.8.1
+    return `House 0.8.2
 
 Usage:
   house help
   house get <repo>
+  house edit [<repo>]
   house load [<repo>]
   house upload [(-m <message>)]
   house upload <repo> [(-m <message>)]
-  house build [<repo>]
-  house edit [<repo>]
+  house build [<repo>] [(-a <arguments>...)]
   house execute [<repo>] [(-a <arguments>...)]
   `
 }
@@ -88,7 +88,7 @@ func ParseConfiguration(args []string) ControllerConfiguration {
         HelpHandler: func(err error, usage string) {
         },
     }
-    options, _ := parser.ParseArgs(usage, args[1:], "0.8.1")
+    options, _ := parser.ParseArgs(usage, args[1:], "0.8.2")
     options.Bind(&config)
     return config
 }
@@ -110,7 +110,7 @@ func GenerateController(config ControllerConfiguration) Controller {
         }
         return uploader
     } else if config.Build {
-        return NewBuildController(repo)
+        return GenerateBuildTool(config)
     } else if config.Edit {
         return NewEditController(repo)
   	} else if config.Get {
@@ -131,6 +131,18 @@ func GenerateExecuteTool(config ControllerConfiguration) ExecuteController {
         repo = config.Repo
     }
     controller := NewExecuteController(repo)
+    if len(config.Arguments) > 0 {
+        controller.ParseArguments(config.Arguments)
+    }
+    return controller
+}
+
+func GenerateBuildTool(config ControllerConfiguration) BuildController {
+  	repo := "."
+    if len(config.Repo) > 1 {
+        repo = config.Repo
+    }
+    controller := NewBuildController(repo)
     if len(config.Arguments) > 0 {
         controller.ParseArguments(config.Arguments)
     }

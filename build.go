@@ -11,6 +11,7 @@ import (
 type BuildController struct {
     Kind ControllerKind
     Source string
+  	Arguments map[string]string
 }
 
 // Creates a new load controller
@@ -18,6 +19,7 @@ func NewBuildController(source string) BuildController {
     return BuildController {
         Kind: BUILD,
         Source: source,
+	  	Arguments: make(map[string]string),
     }
 }
 
@@ -25,6 +27,25 @@ func NewBuildController(source string) BuildController {
 func (controller BuildController) GetKind() ControllerKind {
     return controller.Kind
 }
+
+
+// Parse a string to set new variables
+func (controller *BuildController) ParseArguments(inlet []string) {
+    key := ""
+    for _, it := range inlet {
+        if len(key) == 0 {
+            maybe := it
+            if maybe[0] == '@' {
+                maybe = maybe[1:]
+            }
+            key = maybe
+        } else {
+            controller.Arguments[key] = it
+            key = ""
+        }
+    }
+}
+
 
 // Tries to run the build command in the repo's config.
 // Returns the standard output from the execution of the command.
@@ -42,7 +63,11 @@ func (controller BuildController) Execute() (string, error) {
         commander.Cd("src")
         commander.Cd(controller.Source)
     }
-    for _, command := range config.BuildCommands {
+    for _, rawCommand := range config.BuildCommands {
+	  	command, oops := dishwasher.ReplaceParameters(controller.Arguments, rawCommand)
+        if oops != nil {
+            return "", oops
+        }
         commander.RunCustomCommand(command)
     }
 
