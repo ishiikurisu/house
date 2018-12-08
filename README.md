@@ -41,12 +41,12 @@ is provided, house will run these calls on the current folder.
 
 To upload data to internet, call:
 ```
-house upload <repo/name> [(-m <message>)]
+house upload <repo/name> [(-m <message>)] [(-w <remote>)]
 ```
-This will call `git add -A`, `git commit`, and `git push origin master` on the
+This will call `git add -A`, `git commit`, and `git push <remote> master` on the
 given folder. If no folder is provided, house will run these calls on the
 current folder. To add already append a message to the commit, use the `-m` flag
-to insert a message
+to insert a message. If no remote target is set, House uses `origin`.
 
 To build your project based on its configuration file, call:
 ```
@@ -97,6 +97,7 @@ and run `make try` when you run `house build <repo/name>`.
 Or to start `atom .` when you run `house edit <repo/name>`.
 Or to execute a command from the repo when you run
 `house execute <repo/name> -a <arguments>...`.
+For example: `house execute <repo/name> -a op 'make' where 'here'`.
 
 Build and execute commands can be executed in parallel: just put a dollar sign
 `$` at the end of the line to make it run on background.
