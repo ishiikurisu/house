@@ -60,23 +60,25 @@ type ControllerConfiguration struct {
     A bool
     M bool
     R bool
+    B bool
     Repo string
     Message string
     Arguments []string
     Remote string
+    Branch string
 }
 
 // Gets the documentation for the program.
 func GetDocumentation() string {
-    return `House 0.8.3
+    return `House 0.8.4
 
 Usage:
   house help
   house get <repo>
   house edit [<repo>]
-  house load [<repo>]
-  house upload [(-m <message>)] [(-r <remote>)]
-  house upload <repo> [(-m <message>)] [(-r <remote>)]
+  house load [<repo>] [(-b <branch>)]
+  house upload [(-m <message>)] [(-r <remote>)] [(-b <branch>)]
+  house upload <repo> [(-m <message>)] [(-r <remote>)] [(-b <branch>)]
   house build [<repo>] [(-a <arguments>...)]
   house execute [<repo>] [(-a <arguments>...)]
   `
@@ -90,7 +92,7 @@ func ParseConfiguration(args []string) ControllerConfiguration {
         HelpHandler: func(err error, usage string) {
         },
     }
-    options, _ := parser.ParseArgs(usage, args[1:], "0.8.3")
+    options, _ := parser.ParseArgs(usage, args[1:], "0.8.4")
     options.Bind(&config)
     return config
 }
@@ -104,7 +106,11 @@ func GenerateController(config ControllerConfiguration) Controller {
 
     // Building controller
     if config.Load {
-        return NewLoadController(repo)
+        loadController := NewLoadController(repo)
+        if config.B {
+            loadController.SetBranch(config.Branch)
+        }
+        return loadController
     } else if config.Upload {
         uploader := NewUploadController(repo)
         if message := config.Message; len(message) > 0 {
@@ -112,6 +118,9 @@ func GenerateController(config ControllerConfiguration) Controller {
         }
         if remote := config.Remote; len(remote) > 0 {
             uploader.SetTarget(remote)
+        }
+        if config.B {
+            uploader.SetBranch(config.Branch)
         }
         return uploader
     } else if config.Build {

@@ -11,6 +11,7 @@ type UploadController struct {
     Source string
     Message string
     Remote string
+    Branch string
 }
 
 // Creates a new upload controller
@@ -20,6 +21,7 @@ func NewUploadController(source string) UploadController {
         Source: source,
         Message: "",
         Remote: "origin",
+        Branch: "master",
     }
 }
 
@@ -33,9 +35,13 @@ func (controller *UploadController) SetTarget(remote string) {
     controller.Remote = remote
 }
 
+func (controller *UploadController) SetBranch(branch string) {
+    controller.Branch = branch
+}
+
 // Generates a
 func (controller *UploadController) GeneratePushCommand() string {
-    return fmt.Sprintf("git push %s master", controller.Remote)
+    return fmt.Sprintf("git push %s %s", controller.Remote, controller.Branch)
 }
 
 // Uploads the git repository. Returns the standard output from the execution
@@ -48,6 +54,7 @@ func (controller UploadController) Execute() (string, error) {
         commander.Cd(controller.Source)
     }
 
+    commander.RunCustomCommand(fmt.Sprintf("git checkout %s", controller.Branch))
     commander.RunCustomCommand("git add -A")
     commander.Commit(controller.Message)
     commander.RunCustomCommand(controller.GeneratePushCommand())
