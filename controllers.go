@@ -76,7 +76,8 @@ Usage:
   house help
   house get <repo>
   house edit [<repo>]
-  house load [<repo>] [(-b <branch>)]
+  house load [(-b <branch>)]
+  house load <repo> [(-b <branch>)]
   house upload [(-m <message>)] [(-r <remote>)] [(-b <branch>)]
   house upload <repo> [(-m <message>)] [(-r <remote>)] [(-b <branch>)]
   house build [<repo>] [(-a <arguments>...)]
