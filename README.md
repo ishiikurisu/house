@@ -34,19 +34,21 @@ store its own configurations.
 
 To pull the current repository state from internet, call:
 ```
-house load <repo/name>
+house load <repo/name> [(-b <branch>)]
 ```
-This will call `git pull origin master` on its parameter folder. If no folder
-is provided, house will run these calls on the current folder.
+This will call `git pull origin <branch>` on its parameter folder. If no folder
+is provided, house will run these calls on the current folder. If no branch is
+provided, house will use `master`.
 
 To upload data to internet, call:
 ```
-house upload <repo/name> [(-m <message>)] [(-w <remote>)]
+house upload <repo/name> [(-m <message>)] [(-r <remote>)] [(-b <branch>)]
 ```
-This will call `git add -A`, `git commit`, and `git push <remote> master` on the
-given folder. If no folder is provided, house will run these calls on the
-current folder. To add already append a message to the commit, use the `-m` flag
-to insert a message. If no remote target is set, House uses `origin`.
+This will call `git add -A`, `git commit`, and `git push <remote> <branch>`
+on the given folder. If no folder is provided, house will run these calls on
+the current folder. To add already append a message to the commit, use the
+`-m` flag to insert a message. If no remote target is set, House uses
+`origin`. If no branch is set, House automatically sets it to `master`.
 
 To build your project based on its configuration file, call:
 ```
