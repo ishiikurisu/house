@@ -1,7 +1,9 @@
 package house
 
-import "github.com/ishiikurisu/house/dishwasher"
-import "fmt"
+import (
+    "fmt"
+    "github.com/ishiikurisu/house/dishwasher"
+)
 
 // Defines the load controller
 type LoadController struct {
@@ -27,14 +29,16 @@ func (controller *LoadController) SetBranch(branch string) {
 // of `git pull origin master` and an error if its there.
 func (controller LoadController) Execute() (string, error) {
     commander := dishwasher.NewDishwasher()
+    checkout := fmt.Sprintf("git checkout %s", controller.Branch)
+    pull := fmt.Sprintf("git pull origin %s", controller.Branch)
 
     if controller.Source != "." {
         commander.Cd("src")
         commander.Cd(controller.Source)
     }
 
-    commander.RunCustomCommand(fmt.Sprintf("git checkout %s", controller.Branch))
-    commander.RunCustomCommand(fmt.Sprintf("git pull origin %s", controller.Branch))
+    commander.RunCustomCommand(checkout)
+    commander.RunCustomCommand(pull)
 
     return commander.Execute()
 }

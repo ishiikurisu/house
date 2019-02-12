@@ -114,11 +114,11 @@ func GenerateController(config ControllerConfiguration) Controller {
         return loadController
     } else if config.Upload {
         uploader := NewUploadController(repo)
-        if message := config.Message; len(message) > 0 {
-            uploader.SetMessage(message)
+        if config.M {
+            uploader.SetMessage(config.Message)
         }
-        if remote := config.Remote; len(remote) > 0 {
-            uploader.SetTarget(remote)
+        if config.R {
+            uploader.SetTarget(config.Remote)
         }
         if config.B {
             uploader.SetBranch(config.Branch)
@@ -152,6 +152,7 @@ func GenerateExecuteTool(config ControllerConfiguration) ExecuteController {
     return controller
 }
 
+// Creates a BuildController
 func GenerateBuildTool(config ControllerConfiguration) BuildController {
   	repo := "."
     if len(config.Repo) > 1 {
