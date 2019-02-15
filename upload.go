@@ -54,7 +54,7 @@ func (controller UploadController) Execute() (string, error) {
         commander.Cd(controller.Source)
     }
 
-    commander.RunCustomCommand(fmt.Sprintf("git checkout %s", controller.Branch))
+    commander.Branch(controller.Branch)
     commander.RunCustomCommand("git add -A")
     commander.Commit(controller.Message)
     commander.RunCustomCommand(controller.GeneratePushCommand())

@@ -98,6 +98,41 @@ func RunCommand(custom string) (string, error) {
     return string(output), oops
 }
 
+// Switches to another branch. Creates a new one if necessary.
+func (machine *Dishwasher) Branch(branch string) {
+    machine.Append(func() (string, error) {
+        // IDEA take care of special cases, such as the master branch
+        // checking if branch exists
+        branchExists := false
+        output, oops := RunCommand("git branch")
+        if oops != nil {
+            return string(output), oops
+        }
+        branches := strings.Split(output, "\n")
+        for _, rawMaybe := range branches {
+            maybe := strings.Replace(rawMaybe, "*", " ", -1)
+            maybe = strings.TrimSpace(maybe)
+            if maybe == branch {
+                branchExists = true
+            }
+        }
+
+        // creating branch if necessary
+        if !branchExists {
+            branchCmd := fmt.Sprintf("git branch %s", branch)
+            output, oops = RunCommand(branchCmd)
+            if oops != nil {
+                return string(output), oops
+            }
+        }
+
+        // switching to target branch
+        checkoutCmd := fmt.Sprintf("git checkout %s", branch)
+        output, oops = RunCommand(checkoutCmd)
+        return string(output), oops
+    })
+}
+
 // Executes an arbitrary command.
 func (machine *Dishwasher) RunCustomCommand(custom string) {
     machine.Append(func() (string, error) {
