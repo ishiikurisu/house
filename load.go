@@ -29,7 +29,6 @@ func (controller *LoadController) SetBranch(branch string) {
 // of `git pull origin master` and an error if its there.
 func (controller LoadController) Execute() (string, error) {
     commander := dishwasher.NewDishwasher()
-    checkout := fmt.Sprintf("git checkout %s", controller.Branch)
     pull := fmt.Sprintf("git pull origin %s", controller.Branch)
 
     if controller.Source != "." {
@@ -37,7 +36,7 @@ func (controller LoadController) Execute() (string, error) {
         commander.Cd(controller.Source)
     }
 
-    commander.RunCustomCommand(checkout)
+    commander.Branch(controller.Branch)
     commander.RunCustomCommand(pull)
 
     return commander.Execute()
